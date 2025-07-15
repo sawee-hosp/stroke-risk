@@ -368,15 +368,23 @@
         }
 
         // --- User Registration Check ---
-        async function checkUserRegistration(userId) {
-            try {
-                const response = await fetch(`${GAS_URL}?userId=${userId}`);
-                const data = await response.json();
-                if (data.status === 'found' && data.timestamp) {
-                    $('#registration-status').html(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${data.timestamp}`).show();
-                }
-            } catch (error) { console.error("Failed to check user registration:", error); }
-        }
+  function checkUserRegistration(userId) {
+    // 1) เตรียม callback ให้ browser เรียก
+    window.handleUserRegistration = function(data) {
+      if (data.status === 'found' && data.timestamp) {
+        const el = document.getElementById('registration-status');
+        el.textContent = `✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${data.timestamp}`;
+        el.style.display = 'block';
+      }
+    };
+    
+    // 2) สร้าง <script> เพื่อเรียก doGet?userId=…&callback=…
+    const s = document.createElement('script');
+    s.src = `${GAS_URL
+      }?userId=${encodeURIComponent(userId)
+      }&callback=handleUserRegistration`;
+    document.head.appendChild(s);
+  }
 
         // --- UI Toggling Functions ---
         function toggleSawiPatientForm() { $('#patientForm').toggle($('input[name="isSawiPatient"]:checked').val() === '1'); }

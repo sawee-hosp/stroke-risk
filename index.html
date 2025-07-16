@@ -491,7 +491,7 @@
             return { mainAdvice, finalAdvice, fullText: mainAdvice + "\n\n" + finalAdvice };
         }
 
-        // --- Data Submission ---
+        // --- Data Submission -----------
         async function runSave(event) {
             if (!validateAllInputs()) return;
             if (!userProfile) { showAlert('เกิดข้อผิดพลาด', 'ยังไม่สามารถดึงข้อมูลผู้ใช้ LINE ได้ กรุณาลองเปิดใหม่อีกครั้ง'); return; }

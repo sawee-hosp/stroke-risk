@@ -8,49 +8,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* General Body and Container Styles */
         body { font-family: "Noto Sans Thai", sans-serif; font-size: 16px; background: #f5f5f5; padding: 16px; margin: 0; }
         .container { max-width: 400px; margin: 0 auto; background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         h1 { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 20px; color: #003366; }
-
-        /* Form Group Layout */
         .form-group { display: flex; align-items: center; margin-bottom: 15px; }
         .form-group label { flex: 2; font-weight: bold; margin-right: 10px; }
         .form-group .input-wrapper { flex: 3; display: flex; }
-
-        /* Input, Select, and Readonly Styles */
         .form-group input[type="number"], .form-group input[type="text"], .form-group select { width: 100%; padding: 10px; font-size: 1rem; border-radius: 10px; border: 1px solid #ccc; font-family: "Noto Sans Thai", sans-serif; }
         .form-group input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
         .input-error { border-color: #dc3545 !important; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important; }
-
-        /* Radio and Checkbox Groups */
         .radio-group label, .checkbox-group label { margin-right: 15px; display: flex; align-items: center; cursor: pointer; font-weight: normal; }
         .radio-group input, .checkbox-group input { margin-right: 5px; }
         .checkbox-group .input-wrapper { flex-direction: column; }
         .checkbox-group .input-wrapper label { margin-bottom: 8px; }
-
-        /* Button Styles */
         button { display: block; width: 100%; padding: 15px; font-size: 1rem; color: white; background-color: #007BFF; border: none; border-radius: 10px; cursor: pointer; font-family: "Noto Sans Thai", sans-serif; margin-top: 8px; transition: background-color 0.3s; }
         button:hover { background-color: #0056b3; }
         button:disabled { background-color: #cccccc; cursor: not-allowed; }
-
-        /* Patient Form and Result Container */
         #result-container { margin-top: 20px; padding: 15px; border-top: 1px solid #eee; display: none; }
         #patientForm { display: none; border: 1px dashed #ccc; padding: 15px; margin-top: 15px; border-radius: 8px; }
         #patientForm .checkbox-group label { display: block; margin-bottom: 5px; white-space: normal; }
-
-        /* Modal Styles */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
         .modal-content { background-color: #fefefe; margin: 40% auto; padding: 20px; border: 1px solid #888; width: 85%; max-width: 320px; border-radius: 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .modal-content p { margin-bottom: 20px; white-space: pre-wrap; }
         .modal-content h4 { margin-top: 0; font-weight: bold; }
-
-        /* Status and Progress Bar */
         #registration-status { color: #28a745; font-weight: bold; text-align: center; margin-bottom: 15px; display: none; }
         .progress-bar-container { width: 100%; background-color: #e9ecef; border-radius: 8px; position: relative; height: 30px; margin: 20px 0; }
         .progress-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.4); transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; width: 0%; }
-        
-        /* Credit Footer */
         #credit { font-size: 10px; color: #999; text-align: center; margin-top: 20px; }
     </style>
 </head>
@@ -61,82 +44,6 @@
         <div id="registration-status"></div>
 
         <form id="mainForm" onsubmit="return false;">
-            <div class="form-group">
-                <label for="lineName">ชื่อ Line:</label>
-                <div class="input-wrapper"><input type="text" id="lineName" readonly></div>
-            </div>
-            <div class="form-group">
-                <label for="role">ประเมินให้ใคร:</label>
-                <div class="input-wrapper">
-                    <select id="role" class="form-control">
-                        <option value="ประเมินตัวเอง" selected>ประเมินตัวเอง</option>
-                        <option value="ญาติ/ผู้ดูแลผู้ป่วย">ญาติ/ผู้ดูแลผู้ป่วย</option>
-                        <option value="จนท.สาธารณสุข">จนท.สาธารณสุข</option>
-                        <option value="อสม.สโตรก ประเมินให้คนอื่น">อสม.สโตรก ประเมินให้คนอื่น</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="name">ชื่อผู้รับการประเมิน:</label>
-                <div class="input-wrapper"><input type="text" id="name" placeholder="อยากให้เราเรียกคุณว่าอะไรดีครับ" class="calc-input"></div>
-            </div>
-
-            <div class="form-group">
-                <label>เป็นผู้รับบริการ รพ.สวี:</label>
-                <div class="input-wrapper radio-group">
-                    <label><input type="radio" name="isSawiPatient" value="1"> ใช่</label>
-                    <label><input type="radio" name="isSawiPatient" value="0" checked> ไม่ใช่</label>
-                </div>
-            </div>
-
-            <div id="patientForm">
-                <div class="form-group">
-                    <label for="telephone">เบอร์โทรศัพท์:</label>
-                    <div class="input-wrapper"><input type="text" id="telephone" placeholder="ตัวเลข 10 หลัก ไม่ต้องใส่ขีด"></div>
-                </div>
-                 <div class="form-group checkbox-group" style="align-items: flex-start;">
-                    <label>ยินยอม:</label>
-                    <div class="input-wrapper">
-                        <label>
-                            <input type="checkbox" id="allow_tel" name="allow_tel" value="ยินยอมให้ข้อมูลส่วนบุคคลถูกแชร์กับ อสม./เจ้าหน้าที่สาธารณสุข ในพื้นที่เพื่อการดูแลสุขภาพ" checked>
-                            ให้ข้อมูลส่วนบุคคลถูกแชร์กับ อสม./เจ้าหน้าที่สาธารณสุข ในพื้นที่เพื่อการดูแลสุขภาพ
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="hn">HN (เลข รพ.):</label>
-                    <div class="input-wrapper"><input type="text" id="hn" placeholder="เลขโรงพยาบาล 9 หลัก"></div>
-                </div>
-                <div class="form-group">
-                    <label>หมู่ที่ / ตำบล:</label>
-                    <div class="input-wrapper">
-                        <select id="village" class="form-control" style="margin-right: 5px;"><option value="">หมู่ที่</option></select>
-                        <select id="district" class="form-control">
-                            <option value="">ตำบล</option>
-                            <option>ท่าหิน</option><option>ด่านสวี</option><option>เขาทะลุ</option>
-                            <option>เขาค่าย</option><option>ปากแพรก</option><option>สวี</option>
-                            <option>นาสัก</option><option>ทุ่งระยะ</option><option>วิสัยใต้</option>
-                            <option>ครน</option><option>นาโพธิ์</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="pcu">รพ.สต.:</label>
-                    <div class="input-wrapper"><input type="text" id="pcu" readonly></div>
-                </div>
-                 <div class="form-group checkbox-group">
-                    <label>คนช่วยเหลือเมื่อมีอาการ:</label>
-                    <div class="input-wrapper">
-                         <label><input type="checkbox" name="help" value="รถส่วนตัว"> รถส่วนตัว</label>
-                         <label><input type="checkbox" name="help" value="ญาติ"> ญาติ</label>
-                         <label><input type="checkbox" name="help" value="เพื่อนบ้าน"> เพื่อนบ้าน</label>
-                         <label><input type="checkbox" name="help" value="รถฉุกเฉิน"> รถฉุกเฉิน</label>
-                    </div>
-                </div>
-            </div>
-
-            <hr style="margin: 20px 0;">
-            
             <div class="form-group checkbox-group">
                 <label>โรคประจำตัว:</label>
                 <div class="input-wrapper">
@@ -147,10 +54,10 @@
                      <label><input type="checkbox" name="ud" value="โรคหัวใจ"> โรคหัวใจ</label>
                 </div>
             </div>
-
+            
             <div class="form-group">
                 <label for="age">อายุ (ปี):</label>
-                <div class="input-wrapper"><input type="number" id="age" class="calc-input"></div>
+                <div class="input-wrapper"><input type="number" id="age" class="calc-input" placeholder="30-70 ปี"></div>
             </div>
             <div class="form-group">
                 <label>เพศ:</label>
@@ -162,20 +69,20 @@
             <div class="form-group">
                 <label>สูบบุหรี่:</label>
                 <div class="input-wrapper radio-group">
-                    <label><input type="radio" name="smoke" value="0" class="calc-input"> ไม่สูบ</label>
+                    <label><input type="radio" name="smoke" value="0" class="calc-input" checked> ไม่สูบ</label>
                     <label><input type="radio" name="smoke" value="1" class="calc-input"> สูบ</label>
                 </div>
             </div>
             <div class="form-group">
                 <label>เป็นเบาหวาน:</label>
                 <div class="input-wrapper radio-group">
-                    <label><input type="radio" name="dm" value="0" class="calc-input"> ไม่เป็น</label>
+                    <label><input type="radio" name="dm" value="0" class="calc-input" checked> ไม่เป็น</label>
                     <label><input type="radio" name="dm" value="1" class="calc-input"> เป็น</label>
                 </div>
             </div>
             <div class="form-group">
                 <label for="sbp">ความดัน (ตัวบน):</label>
-                <div class="input-wrapper"><input type="number" id="sbp" class="calc-input" placeholder="mmHg"></div>
+                <div class="input-wrapper"><input type="number" id="sbp" class="calc-input" placeholder="70-220 mmHg"></div>
             </div>
             
             <div class="form-group">
@@ -188,7 +95,7 @@
             <div id="tc_group" style="display:none;">
                 <div class="form-group">
                     <label for="tc">Total Cholesterol:</label>
-                    <div class="input-wrapper"><input type="number" id="tc" class="calc-input" placeholder="mg/dL"></div>
+                    <div class="input-wrapper"><input type="number" id="tc" class="calc-input" placeholder="น้อยกว่า 280 mg/dL"></div>
                 </div>
             </div>
             <div id="body_measure_group">
@@ -201,92 +108,30 @@
                     <div class="input-wrapper"><input type="number" id="bdh" class="calc-input"></div>
                 </div>
             </div>
-            
-            <hr style="margin: 20px 0;">
-
-            <div class="form-group checkbox-group" style="align-items: flex-start;">
-                <div class="input-wrapper">
-                    <label>
-                        <input type="checkbox" id="pdpa" name="pdpa" value="อนุญาตให้ทีมฯ โรงพยาบาลสวี ประมวลผลข้อมูลของท่านเพื่อนำไปวิเคราะห์ความเสี่ยงการเกิดสโตรก" checked>
-                        อนุญาตให้ทีมฯ โรงพยาบาลสวี ประมวลผลข้อมูลของคุณเพื่อนำไปวิเคราะห์ความเสี่ยงการเกิดสโตรก*
-                    </label>
-                </div>
-            </div>
         </form>
 
         <div id="result-container">
             <div id="result-text"></div>
         </div>
-
-        <button id="saveButton" onclick="runSave(event)">บันทึกประวัติ</button>
-        
         <div id="credit">จัดทำโดย รพ.สวี จ.ชุมพร</div>
     </div>
-
-    <div id="successModal" class="modal"><div class="modal-content"><p>บันทึกผลเรียบร้อยแล้ว และได้ส่งสรุปผลเข้าห้องแชท LINE ของคุณ</p><button id="modal-ok-btn">ตกลง</button></div></div>
-    <div id="alertModal" class="modal"><div class="modal-content"><h4 id="alertModalTitle"></h4><p id="alertModalText"></p><button id="alertModalOkBtn">ตกลง</button></div></div>
-
+    
     <script>
-        const LIFF_ID = '2005789397-nebQ8oJy';
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec';
-        let userProfile = null;
-
         document.addEventListener('DOMContentLoaded', () => {
-            initializeLiff();
             setupEventListeners();
-            populateVillageDropdown();
             toggleMeasurementFields();
         });
 
-        async function initializeLiff() {
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                } else {
-                    userProfile = await liff.getProfile();
-                    $('#lineName').val(userProfile.displayName);
-                    checkUserRegistration(userProfile.userId);
-                }
-            } catch (e) { console.error('LIFF Init Error:', e); showAlert('LIFF Error', 'ไม่สามารถเริ่มต้น LIFF ได้'); }
-        }
-
         function setupEventListeners() {
-            $('.calc-input').on('input change', (event) => {
-                if (event.target.name === 'useCholesterol') return;
-                if (validateCalculationInputs(false)) {
+            $('.calc-input').on('input change', () => {
+                if (validateCalculationInputs()) {
                     const { riskData, inputs } = calculateRisk();
                     displayResults(riskData, inputs);
                 } else {
                     $('#result-container').hide();
                 }
             });
-
-            $('input[name="isSawiPatient"]').on('change', toggleSawiPatientForm);
             $('input[name="useCholesterol"]').on('change', toggleMeasurementFields);
-
-            $('#village, #district').on('change', updateAddressAndHospital);
-            $('#modal-ok-btn').on('click', () => { if (liff.isInClient()) liff.closeWindow(); });
-            $('#alertModalOkBtn').on('click', () => $('#alertModal').hide());
-        }
-
-        function populateVillageDropdown() {
-            for (let i = 1; i <= 19; i++) $('#village').append(`<option value="${i}">${i}</option>`);
-        }
-
-        function checkUserRegistration(userId) {
-            window.handleUserRegistration = (data) => {
-                if (data.status === 'found' && data.timestamp) {
-                    $('#registration-status').text(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${data.timestamp}`).show();
-                }
-            };
-            const s = document.createElement('script');
-            s.src = `${GAS_URL}?userId=${encodeURIComponent(userId)}&callback=handleUserRegistration`;
-            document.head.appendChild(s);
-        }
-
-        function toggleSawiPatientForm() {
-            $('#patientForm').toggle($('input[name="isSawiPatient"]:checked').val() === '1');
         }
 
         function toggleMeasurementFields() {
@@ -295,259 +140,149 @@
             $('#body_measure_group').toggle(!useCholesterol);
             if (useCholesterol) $('#wc, #bdh').val('');
             else $('#tc').val('');
-            
-            if (validateCalculationInputs(false)) {
-                const { riskData, inputs } = calculateRisk();
-                displayResults(riskData, inputs);
-            } else {
-                $('#result-container').hide();
-            }
+            $('.calc-input').trigger('change');
         }
 
-        function updateAddressAndHospital() {
-            const moo = $('#village').val(), tb = $('#district').val();
-            const hospitals = { "ท่าหิน": "รพ.สต.ท่าหิน", "ด่านสวี": "รพ.สต.ด่านสวี", "เขาทะลุ": "รพ.สต.เขาทะลุ", "เขาค่าย": "รพ.สต.เขาค่าย", "ปากแพรก": "รพ.สต.ปากแพรก", "สวี": "รพ.สต.สวี", "นาสัก": { "1": "รพ.สต.บ้านแก่งกระทั่ง", "6": "รพ.สต.บ้านแก่งกระทั่ง", "11": "รพ.สต.บ้านแก่งกระทั่ง", "13": "รพ.สต.บ้านแก่งกระทั่ง", "18": "รพ.สต.บ้านแก่งกระทั่ง", "19": "รพ.สต.บ้านแก่งกระทั่ง", "7": "รพ.สต.บ้านไทยพัฒนา", "8": "รพ.สต.บ้านไทยพัฒนา", "9": "รพ.สต.บ้านไทยพัฒนา", "10": "รพ.สต.บ้านไทยพัฒนา", "12": "รพ.สต.บ้านไทยพัฒนา", "15": "รพ.สต.บ้านไทยพัฒนา", "16": "รพ.สต.บ้านไทยพัฒนา", "2": "รพ.สต.นาสัก", "4": "รพ.สต.นาสัก", "5": "รพ.สต.นาสัก", "14": "รพ.สต.นาสัก", "17": "รพ.สต.นาสัก" }, "ทุ่งระยะ": { "5": "รพ.สต.บ้านคสองน้อย", "6": "รพ.สต.บ้านคสองน้อย", "7": "รพ.สต.บ้านคสองน้อย", "8": "รพ.สต.บ้านคสองน้อย", "9": "รพ.สต.บ้านคสองน้อย", "10": "รพ.สต.บ้านคสองน้อย", "1": "รพ.สต.ทุ่งระยะ", "2": "รพ.สต.ทุ่งระยะ", "3": "รพ.สต.ทุ่งระยะ", "4": "รพ.สต.ทุ่งระยะ", "11": "รพ.สต.ทุ่งระยะ" }, "วิสัยใต้": { "1": "รพ.สต.บ้านดอนทราย", "3": "รพ.สต.บ้านดอนทราย", "4": "รพ.สต.บ้านดอนทราย", "8": "รพ.สต.บ้านดอนทราย", "2": "รพ.สต.วิสัยใต้", "5": "รพ.สต.วิสัยใต้", "6": "รพ.สต.วิสัยใต้", "7": "รพ.สต.วิสัยใต้", "9": "รพ.สต.วิสัยใต้", "10": "รพ.สต.วิสัยใต้" }, "ครน": { "1": "รพ.สต.ครน", "2": "รพ.สต.ครน", "3": "รพ.สต.ครน", "4": "รพ.สต.ครน", "6": "รพ.สต.ครน", "12": "รพ.สต.ครน", "9": "รพ.สต.บ้านควนสามัคคี", "10": "รพ.สต.บ้านควนสามัคคี", "13": "รพ.สต.บ้านควนสามัคคี", "14": "รพ.สต.บ้านควนสามัคคี", "5": "รพ.สต.บ้านน้ำฉา", "7": "รพ.สต.บ้านน้ำฉา", "8": "รพ.สต.บ้านน้ำฉา", "11": "รพ.สต.บ้านน้ำฉา" }, "นาโพธิ์": "รพ.สวี (นาโพธิ์)" };
-            let hosp = hospitals[tb];
-            if (typeof hosp === 'object') hosp = hosp[moo] || '';
-            $('#pcu').val(hosp || 'ไม่พบข้อมูล');
-        }
-
-        function showAlert(title, message) {
-            $('#alertModalTitle').text(title);
-            $('#alertModalText').text(message);
-            $('#alertModal').show();
-        }
-
-        function validateAndStyle(selector, condition, message) {
-            const element = $(selector);
-            if (condition) {
-                element.removeClass('input-error');
-                return null;
-            } else {
-                element.addClass('input-error');
-                return message;
-            }
-        }
-
-        function validateAllInputs() {
-            $('.input-error').removeClass('input-error');
-            const errors = [];
-            if (!validateCalculationInputs(false)) errors.push('• กรุณากรอกข้อมูลการประเมินความเสี่ยงให้ครบถ้วน');
-            if ($('input[name="isSawiPatient"]:checked').val() === '1') {
-                const tel = $('#telephone').val();
-                if (tel) errors.push(validateAndStyle('#telephone', /^\d{10}$/.test(tel), '• เบอร์โทรศัพท์ไม่ถูกต้อง'));
-                else errors.push(validateAndStyle('#telephone', false, '• กรุณากรอกเบอร์โทรศัพท์'));
-                const hn = $('#hn').val();
-                if (hn) errors.push(validateAndStyle('#hn', /^\d{9}$/.test(hn), '• HN ไม่ถูกต้อง'));
-            }
-            const finalErrors = errors.filter(e => e !== null);
-            if (finalErrors.length > 0) {
-                showAlert('ข้อมูลไม่ถูกต้อง', 'กรุณาตรวจสอบข้อมูลและแก้ไขให้ถูกต้อง:\n' + finalErrors.join('\n'));
-                return false;
-            }
-            return true;
-        }
-
-        function validateCalculationInputs(shouldShowAlert = true) {
-            const inputs = {
-                'โรคประจำตัว': $('input[name="ud"]:checked').length > 0 ? 'ok' : '',
-                'อายุ': $('#age').val(), 'เพศ': $('input[name="sex"]:checked').val(),
+        function validateCalculationInputs() {
+            const requiredInputs = {
+                'อายุ': $('#age').val(), 
+                'เพศ': $('input[name="sex"]:checked').val(),
                 'การสูบบุหรี่': $('input[name="smoke"]:checked').val(),
-                'เบาหวาน': $('input[name="dm"]:checked').val(), 'ความดันโลหิต': $('#sbp').val(),
-                'การระบุผลเลือด': $('input[name="useCholesterol"]:checked').val()
+                'เบาหวาน': $('input[name="dm"]:checked').val(), 
+                'ความดันโลหิต': $('#sbp').val()
             };
             if ($('input[name="useCholesterol"]:checked').val() === '1') {
-                inputs['Total Cholesterol'] = $('#tc').val();
+                requiredInputs['Total Cholesterol'] = $('#tc').val();
             } else {
-                inputs['รอบเอว'] = $('#wc').val();
-                inputs['ส่วนสูง'] = $('#bdh').val();
+                requiredInputs['รอบเอว'] = $('#wc').val();
+                requiredInputs['ส่วนสูง'] = $('#bdh').val();
             }
-            const missingFields = Object.keys(inputs).filter(key => !inputs[key]);
-            if (missingFields.length > 0) {
-                if (shouldShowAlert) showAlert('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลต่อไปนี้ให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
-                return false;
-            }
-            return true;
+            return Object.values(requiredInputs).every(val => val !== '' && val !== null && val !== undefined);
         }
 
-        function calculateRisk() {
-            const hasHistoryOfStroke = $('input[name="ud"][value="โรคหลอดเลือดสมอง"]').is(':checked');
-            let age = parseFloat($('#age').val()) || 0;
-            age = Math.max(30, Math.min(age, 70));
-            let sbp = parseFloat($('#sbp').val()) || 0;
-            const sbpForCalc = Math.max(70, Math.min(sbp, 220));
+        function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr, wc) {
+            var full_score = 0, compare_score = 0, predicted_risk = 0, compare_risk = 0;
+            var compare_whr = sex == 0 ? 0.52667 : 0.58125;
+            var compare_wc = sex == 0 ? 79 : 93;
+            var compare_sbp = 120;
+            if (sex == 1 && age > 60) { compare_sbp = 132; }
+            if (sex == 0 && age <= 60) { compare_sbp = 115; }
+            if (sex == 0 && age > 60) { compare_sbp = 130; }
+            var sur_root = 0.964588;
 
-            const inputs = {
-                age, sbp, sbpForCalc,
-                smoke: +$('input[name="smoke"]:checked').val(),
-                dm: +$('input[name="dm"]:checked').val(),
-                sex: +$('input[name="sex"]:checked').val(),
-                tc: parseFloat($('#tc').val()) || 0,
-                wc_inch: parseFloat($('#wc').val()) || 0,
-                ht: parseFloat($('#bdh').val()) || 0,
-                hasHistoryOfStroke
-            };
-
-            const wc_cm = !isNaN(inputs.wc_inch) ? inputs.wc_inch * 2.54 : NaN;
-            const whr = !isNaN(wc_cm) && inputs.ht > 0 ? wc_cm / inputs.ht : NaN;
-            
-            let predicted_risk = 0, compare_risk = 0;
-
-            if (hasHistoryOfStroke) {
-                predicted_risk = 0.45;
-                const compareResult = TASCVDformular(inputs.age, 0, 0, 0, inputs.sex, NaN, whr);
-                compare_risk = compareResult[3];
-            } else {
-                const calcResult = TASCVDformular(inputs.age, inputs.smoke, inputs.dm, inputs.sbpForCalc, inputs.sex, inputs.tc, whr);
-                predicted_risk = calcResult[1];
-                compare_risk = calcResult[3];
-            }
-
-            const riskClassification = classifyRisk(predicted_risk);
-            const compareRatio = (compare_risk > 0 && predicted_risk >= 0) ? (predicted_risk / compare_risk).toFixed(1) : "N/A";
-
-            const riskData = {
-                riskRangeText: riskClassification.rangeText,
-                riskMaxValue: riskClassification.maxValue > 40 ? 50 : riskClassification.maxValue,
-                riskGroup: riskClassification.text,
-                riskColor: riskClassification.color,
-                compareRatio
-            };
-            return { riskData, inputs };
-        }
-
-        function displayResults(riskData, inputs) {
-            let compareText = `ซึ่งเมื่อเทียบกับคนเพศเดียวกัน อายุเท่ากัน แต่ไม่มีปัจจัยเสี่ยงเลย ความเสี่ยงของคุณจะอยู่ที่ ${riskData.compareRatio} เท่า`;
-            if (riskData.compareRatio === "N/A" || isNaN(parseFloat(riskData.compareRatio))) {
-                compareText = "ไม่สามารถเปรียบเทียบความเสี่ยงได้เนื่องจากข้อมูลไม่เพียงพอ";
-            }
-
-            const resultHtml = `
-                <div class="progress-bar-container">
-                    <div class="progress-bar" style="width: ${riskData.riskMaxValue}%; background-color: ${riskData.riskColor};">${riskData.riskRangeText}</div>
-                </div>
-                <p>โอกาสเกิดโรคหัวใจและหลอดเลือดใน 10 ปีข้างหน้า: <strong>${riskData.riskRangeText}</strong></p>
-                <p>จากคน 100 คนที่มีปัจจัยเสี่ยงแบบคุณ ใน 10 ปีข้างหน้า คาดว่า ${riskData.riskGroup} คนจะป่วยเป็นโรคนี้</p>
-                <p>${compareText}</p>
-                <hr>
-                <p><strong>ข้อแนะนำเบื้องต้น</strong></p>
-                <p style="white-space: pre-wrap;">${generateSuggestionText(riskData, inputs).mainAdvice}</p>
-                <p style="color: #c00; font-weight: bold; margin-top: 15px; text-align: center;">${generateSuggestionText(riskData, inputs).finalAdvice}</p>
-            `;
-            $('#result-text').html(resultHtml);
-            $('#result-container').show();
-        }
-
-        function generateSuggestionText(riskData, inputs) {
-            if (inputs.hasHistoryOfStroke) {
-                 return {
-                    mainAdvice: "คุณมีประวัติเคยเป็นโรคหลอดเลือดสมอง จัดเป็นกลุ่มเสี่ยงสูงสุดที่จะเป็นซ้ำ\n\n• ควรพบแพทย์ตามนัดและทานยาอย่างสม่ำเสมอ\n• ควบคุมปัจจัยเสี่ยงทั้งหมด (ความดัน, เบาหวาน, ไขมัน) ให้อยู่ในเกณฑ์ดีเยี่ยม",
-                    finalAdvice: "สัญญาณเตือนสโตรก (B.E.F.A.S.T.)\nB-Balance เดินเซ, E-Eyes ตาพร่ามัว, F-Face หน้าเบี้ยว, A-Arm แขนขาอ่อนแรง, S-Speech พูดไม่ชัด, T-Time รีบไปโรงพยาบาลทันที!",
-                };
-            }
-
-            let specificSuggestions = [];
-            if (inputs.smoke === 1) specificSuggestions.push('• เลิกสูบบุหรี่โดยเด็ดขาด');
-            if (inputs.dm === 1) specificSuggestions.push('• รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ');
-            if (inputs.sbp >= 140) specificSuggestions.push('• ควบคุมระดับความดันโลหิตให้น้อยกว่า 140/90 mmHg');
-            else if (inputs.sbp >= 120) specificSuggestions.push('• ระวังความดันโลหิตที่เริ่มสูง ควรลดเค็มและออกกำลังกาย');
-            
-            if (inputs.tc > 0 && inputs.tc >= 240) {
-                 specificSuggestions.push('• ควบคุมระดับไขมันในเลือด ควรปรึกษาแพทย์');
-            }
-
-            const wc_cm = inputs.wc_inch * 2.54;
-            if (inputs.tc <= 0 && ((inputs.sex === 1 && wc_cm >= 90) || (inputs.sex === 0 && wc_cm >= 80))) {
-                specificSuggestions.push('• ลดน้ำหนัก/รอบเอว ให้อยู่ในเกณฑ์ปกติ (ชาย < 90 ซม., หญิง < 80 ซม.)');
-            }
-
-            let mainAdvice = "ดูแลสุขภาพร่างกายให้แข็งแรง ออกกำลังกายสม่ำเสมอ ทานอาหารมีประโยชน์ และตรวจสุขภาพประจำปี";
-             if (riskData.riskMaxValue >= 20) {
-                 mainAdvice = "คุณมีความเสี่ยงสูง ควรปรึกษาแพทย์หรือเจ้าหน้าที่สาธารณสุขเพื่อวางแผนลดความเสี่ยงอย่างจริงจัง";
-             } else if (riskData.riskMaxValue >= 10) {
-                 mainAdvice = "คุณมีความเสี่ยงปานกลาง ควรเริ่มปรับเปลี่ยนพฤติกรรมสุขภาพเพื่อลดปัจจัยเสี่ยงต่างๆ";
-             }
-            
-            if(specificSuggestions.length > 0) mainAdvice += "\n\n**สิ่งที่ควรปรับปรุง:**\n" + specificSuggestions.join("\n");
-            
-            return { 
-                mainAdvice, 
-                finalAdvice: "เรียนรู้สัญญาณเตือนสโตรก (B.E.F.A.S.T.) เพื่อรีบไปโรงพยาบาลให้ทันเวลา!"
-            };
-        }
-
-        async function runSave(event) {
-            if (!validateAllInputs()) return;
-            if (!userProfile) { showAlert('เกิดข้อผิดพลาด', 'ยังไม่สามารถดึงข้อมูลผู้ใช้ LINE ได้'); return; }
-            
-            const saveButton = $(event.target);
-            saveButton.prop('disabled', true).text('กำลังบันทึก...');
-
-            const { riskData, inputs } = calculateRisk();
-            const suggestion = generateSuggestionText(riskData, inputs);
-            const suggestionText = `${suggestion.mainAdvice}\n\n${suggestion.finalAdvice}`;
-            let name = $('#name').val().trim() || userProfile.displayName;
-
-            const dataToSend = {
-                name, role: $('#role').val(), hn: $('#hn').val(), district: $('#district').val(), village: $('#village').val(), pcu: $('#pcu').val(),
-                ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '),
-                help: $('input[name="help"]:checked').map((_, el) => $(el).val()).get().join(', '),
-                telephone: $('#telephone').val(), 
-                gender: inputs.sex == 1 ? 'ชาย' : 'หญิง',
-                age: inputs.age, smoke: inputs.smoke, dm: inputs.dm, sbp: inputs.sbp,
-                cholesterol: inputs.tc > 0 ? inputs.tc : '',
-                waist: inputs.wc_inch, height: inputs.ht,
-                thai_cv_risk_score: riskData.riskRangeText, 
-                risk_group: riskData.riskGroup,
-                risk_color: riskData.riskColor,
-                compare_ratio: riskData.compareRatio,
-                suggestionText,
-                userId: userProfile.userId, displayName: userProfile.displayName, pictureUrl: userProfile.pictureUrl,
-                allow_tel: $('#allow_tel').is(':checked') ? $('#allow_tel').val() : 'ไม่ยินยอม',
-                pdpa: $('#pdpa').is(':checked') ? $('#pdpa').val() : 'ไม่ยินยอม',
-            };
-
-            try {
-                const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(dataToSend), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
-                const result = await response.json();
-                if (result.status === 'success') $('#successModal').show();
-                else throw new Error(result.message || 'Server returned an error.');
-            } catch (error) {
-                showAlert('การบันทึกล้มเหลว', `เกิดข้อผิดพลาด: ${error.message}`);
-            } finally {
-                saveButton.prop('disabled', false).text('บันทึกประวัติ');
-            }
-        }
-        
-        function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr) {
-            const sur_root = 0.964588;
-            let full_score = 0, compare_score = 0, predicted_risk = 0, compare_risk = 0;
-            const compare_sbp = sex == 1 ? (age > 60 ? 132 : 120) : (age > 60 ? 130 : 115);
-            
-            if (!isNaN(tc) && tc > 0) {
+            if (tc > 0) {
                 full_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke);
                 predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.04423)));
                 compare_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * compare_sbp) + (0.00212 * 200);
                 compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.04423)));
-            } else if (!isNaN(whr) && whr > 0) {
-                const compare_whr = sex == 1 ? 0.58125 : 0.52667;
+            } else if (whr > 0) {
                 full_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke);
                 predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.712325)));
                 compare_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * compare_sbp) + (3.512566 * compare_whr);
                 compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.712325)));
-            } else {
-                return [0, 0, 0, 0];
+            } else if (wc > 0) {
+                full_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * sbp) + (0.59953 * dm) + (0.01283 * wc) + (0.459 * smoke);
+                predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.31047)));
+                compare_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * compare_sbp) + (0.01283 * compare_wc);
+                compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.31047)));
             }
             return [full_score, predicted_risk, compare_score, compare_risk];
         }
 
-        function classifyRisk(r) {
-            const p = r * 100;
-            if (p < 10) return { text: "1-9", color: "#28a745", rangeText: "<10%", maxValue: 10 };
-            if (p < 20) return { text: "10-19", color: "#ffc107", rangeText: "10-19%", maxValue: 20 };
-            if (p < 30) return { text: "20-29", color: "#fd7e14", rangeText: "20-29%", maxValue: 30 };
-            if (p < 40) return { text: "30-39", color: "#dc3545", rangeText: "30-39%", maxValue: 40 };
-            return { text: "40+", color: "#8B0000", rangeText: "≥40%", maxValue: 100 };
+        function calculateRisk() {
+            const hasHistoryOfStroke = $('input[name="ud"][value="โรคหลอดเลือดสมอง"]').is(':checked');
+            
+            const rawInputs = {
+                age: parseFloat($('#age').val()) || 0,
+                sbp: parseFloat($('#sbp').val()) || 0,
+                tc: parseFloat($('#tc').val()) || 0,
+                smoke: +$('input[name="smoke"]:checked').val(),
+                dm: +$('input[name="dm"]:checked').val(),
+                sex: +$('input[name="sex"]:checked').val(),
+                wc_inch: parseFloat($('#wc').val()) || 0,
+                ht: parseFloat($('#bdh').val()) || 0
+            };
+            
+            const clampedInputs = {
+                age: Math.max(30, Math.min(rawInputs.age, 70)),
+                sbp: Math.max(70, Math.min(rawInputs.sbp, 220)),
+                tc: Math.min(rawInputs.tc, 280),
+                wc_cm: !isNaN(rawInputs.wc_inch) ? rawInputs.wc_inch * 2.54 : 0
+            };
+            clampedInputs.whr = clampedInputs.wc_cm > 0 && rawInputs.ht > 0 ? clampedInputs.wc_cm / rawInputs.ht : 0;
+            
+            if (hasHistoryOfStroke) {
+                return {
+                    riskData: { riskPercentText: ">40%", barValue: 40, riskGroup: "เสี่ยงสูงมาก (มีประวัติสโตรก)", riskColor: "#8B0000", compareRatio: "N/A" },
+                    inputs: rawInputs
+                };
+            }
+
+            const calcResult = TASCVDformular(clampedInputs.age, rawInputs.smoke, rawInputs.dm, clampedInputs.sbp, rawInputs.sex, clampedInputs.tc, clampedInputs.whr, clampedInputs.wc_cm);
+            const predicted_risk = calcResult[1];
+            
+            let riskData = {};
+            if (predicted_risk > 0.3) {
+                riskData.riskPercentText = ">30%";
+                riskData.barValue = 30;
+            } else {
+                riskData.riskPercentText = (predicted_risk * 100).toFixed(0) + "%";
+                riskData.barValue = predicted_risk * 100;
+            }
+
+            const riskClassification = classifyRisk(predicted_risk);
+            riskData.riskGroup = riskClassification.text;
+            riskData.riskColor = riskClassification.color;
+            riskData.compareRatio = (calcResult[3] > 0 && predicted_risk >= 0) ? (predicted_risk / calcResult[3]).toFixed(1) : "N/A";
+            
+            return { riskData, inputs: rawInputs };
+        }
+
+        function classifyRisk(risk) {
+            if (risk < 0.05) return { text: "เสี่ยงต่ำมาก", color: "#198754" };
+            if (risk < 0.1) return { text: "เสี่ยงต่ำ", color: "#28a745" };
+            if (risk < 0.2) return { text: "เสี่ยงปานกลาง", color: "#ffc107" };
+            if (risk < 0.3) return { text: "เสี่ยงสูง", color: "#fd7e14" };
+            return { text: "เสี่ยงสูงมาก", color: "#dc3545" };
+        }
+
+        function generateSuggestionText(inputs) {
+            let suggestions = [];
+            if (inputs.smoke === 1) suggestions.push('• เลิกสูบบุหรี่');
+            if (inputs.dm === 1) suggestions.push('• รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ');
+            if (inputs.sbp >= 140) suggestions.push('• ควบคุมระดับความดันโลหิต (เป้าหมาย < 140/90 mmHg)');
+            if (inputs.tc > 0 && inputs.tc >= 220) suggestions.push('• ควบคุมระดับไขมันในเลือด');
+            
+            const wc_cm = inputs.wc_inch * 2.54;
+            if (inputs.tc <= 0 && ((inputs.sex === 1 && wc_cm >= 90) || (inputs.sex === 0 && wc_cm >= 80))) {
+                suggestions.push('• ลดน้ำหนัก/รอบเอว (เป้าหมาย: ชาย < 90 ซม., หญิง < 80 ซม.)');
+            }
+
+            if (suggestions.length > 0) {
+                return "ปัจจัยเสี่ยงที่ควรจัดการ:\n" + suggestions.join("\n");
+            }
+            return "คุณไม่มีปัจจัยเสี่ยงที่ผิดปกติ แต่ควรรักษาวิถีชีวิตที่ส่งเสริมสุขภาพดีต่อไป";
+        }
+
+        function displayResults(riskData, inputs) {
+            const suggestions = generateSuggestionText(inputs);
+            let compareText = `ซึ่งเมื่อเทียบกับคนเพศเดียวกัน อายุเท่ากัน แต่ไม่มีปัจจัยเสี่ยงเลย ความเสี่ยงของคุณจะอยู่ที่ ${riskData.compareRatio} เท่า`;
+             if (riskData.compareRatio === "N/A") {
+                compareText = "";
+            }
+
+            const resultHtml = `
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${riskData.barValue}%; background-color: ${riskData.riskColor};">${riskData.riskPercentText}</div>
+                </div>
+                <p>ความเสี่ยงต่อการเกิดโรคหัวใจและหลอดเลือดใน 10 ปี: <strong>${riskData.riskPercentText}</strong></p>
+                <p><strong>(${riskData.riskGroup})</strong></p>
+                <p>${compareText}</p>
+                <hr>
+                <p><strong>ข้อแนะนำเบื้องต้น</strong></p>
+                <p style="white-space: pre-wrap;">${suggestions}</p>
+            `;
+            $('#result-text').html(resultHtml).parent().show();
         }
     </script>
 </body>

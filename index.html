@@ -250,9 +250,10 @@
         }
 
         function setupEventListeners() {
-            // This now triggers calculation for all relevant fields
             $('.calc-input').on('input change', () => {
-                if (validateCalculationInputs(false)) { // No alert on every input
+                // This specific check prevents the loop from the radio button
+                if (event.target.name === 'useCholesterol') return; 
+                if (validateCalculationInputs(false)) {
                     const { riskData, inputs } = calculateRisk();
                     displayResults(riskData, inputs);
                 } else {
@@ -261,7 +262,6 @@
             });
 
             $('input[name="isSawiPatient"]').on('change', toggleSawiPatientForm);
-            // RE-ADDED: Event listener for cholesterol choice
             $('input[name="useCholesterol"]').on('change', toggleMeasurementFields);
             
             $('#village, #district').on('change', updateAddressAndHospital);
@@ -290,29 +290,34 @@
         // --- UI Toggling Functions ---
         function toggleSawiPatientForm() { $('#patientForm').toggle($('input[name="isSawiPatient"]:checked').val() === '1'); }
         
-        // RE-ADDED: Function to toggle between Cholesterol and Body Measurement fields
         function toggleMeasurementFields() {
             const useCholesterol = $('input[name="useCholesterol"]:checked').val() === '1';
             $('#tc_group').toggle(useCholesterol);
             $('#body_measure_group').toggle(!useCholesterol);
-            // Clear the values of the hidden fields to avoid confusion
             if (useCholesterol) {
                 $('#wc, #bdh').val('');
             } else {
                 $('#tc').val('');
             }
-            // Trigger a change to re-evaluate the form
-            $('.calc-input').trigger('change');
+            
+            // **FIX**: Instead of triggering a loop, directly call the calculation logic.
+            if (validateCalculationInputs(false)) {
+                const { riskData, inputs } = calculateRisk();
+                displayResults(riskData, inputs);
+            } else {
+                $('#result-container').hide();
+            }
         }
 
         function updateAddressAndHospital() {
             const moo = $('#village').val(), tb = $('#district').val();
-            const hospitals = { "ท่าหิน": "รพ.สต.ท่าหิน", "ด่านสวี": "รพ.สต.ด่านสวี", "เขาทะลุ": "รพ.สต.เขาทะลุ", "เขาค่าย": "รพ.สต.เขาค่าย", "ปากแพรก": "รพ.สต.ปากแพรก", "สวี": "รพ.สต.สวี", "นาสัก": { "1": "รพ.สต.บ้านแก่งกระทั่ง", "6": "รพ.สต.บ้านแก่งกระทั่ง", "11": "รพ.สต.บ้านแก่งกระทั่ง", "13": "รพ.สต.บ้านแก่งกระทั่ง", "18": "รพ.สต.บ้านแก่งกระทั่ง", "19": "รพ.สต.บ้านแก่งกระทั่ง", "7": "รพ.สต.บ้านไทยพัฒนา", "8": "รพ.สต.บ้านไทยพัฒนา", "9": "รพ.สต.บ้านไทยพัฒนา", "10": "รพ.สต.บ้านไทยพัฒนา", "12": "รพ.สต.บ้านไทยพัฒนา", "15": "รพ.สต.บ้านไทยพัฒนา", "16": "รพ.สต.บ้านไทยพัฒนา", "2": "รพ.สต.นาสัก", "3": "รพ.สต.นาสัก","4": "รพ.สต.นาสัก", "5": "รพ.สต.นาสัก", "14": "รพ.สต.นาสัก", "17": "รพ.สต.นาสัก" }, "ทุ่งระยะ": { "5": "รพ.สต.บ้านคลองน้อย", "6": "รพ.สต.บ้านคสองน้อย", "7": "รพ.สต.บ้านคสองน้อย", "8": "รพ.สต.บ้านคสองน้อย", "9": "รพ.สต.บ้านคสองน้อย", "10": "รพ.สต.บ้านคสองน้อย", "1": "รพ.สต.ทุ่งระยะ", "2": "รพ.สต.ทุ่งระยะ", "3": "รพ.สต.ทุ่งระยะ", "4": "รพ.สต.ทุ่งระยะ", "11": "รพ.สต.ทุ่งระยะ" }, "วิสัยใต้": { "1": "รพ.สต.บ้านดอนทราย", "3": "รพ.สต.บ้านดอนทราย", "4": "รพ.สต.บ้านดอนทราย", "8": "รพ.สต.บ้านดอนทราย", "2": "รพ.สต.วิสัยใต้", "5": "รพ.สต.วิสัยใต้", "6": "รพ.สต.วิสัยใต้", "7": "รพ.สต.วิสัยใต้", "9": "รพ.สต.วิสัยใต้", "10": "รพ.สต.วิสัยใต้" }, "ครน": { "1": "รพ.สต.ครน", "2": "รพ.สต.ครน", "3": "รพ.สต.ครน", "4": "รพ.สต.ครน", "6": "รพ.สต.ครน", "12": "รพ.สต.ครน", "9": "รพ.สต.บ้านควนสามัคคี", "10": "รพ.สต.บ้านควนสามัคคี", "13": "รพ.สต.บ้านควนสามัคคี", "14": "รพ.สต.บ้านควนสามัคคี", "5": "รพ.สต.บ้านน้ำฉา", "7": "รพ.สต.บ้านน้ำฉา", "8": "รพ.สต.บ้านน้ำฉา", "11": "รพ.สต.บ้านน้ำฉา" }, "นาโพธิ์": "รพ.สวี (นาโพธิ์)" };
+            const hospitals = { "ท่าหิน": "รพ.สต.ท่าหิน", "ด่านสวี": "รพ.สต.ด่านสวี", "เขาทะลุ": "รพ.สต.เขาทะลุ", "เขาค่าย": "รพ.สต.เขาค่าย", "ปากแพรก": "รพ.สต.ปากแพรก", "สวี": "รพ.สต.สวี", "นาสัก": { "1": "รพ.สต.บ้านแก่งกระทั่ง", "6": "รพ.สต.บ้านแก่งกระทั่ง", "11": "รพ.สต.บ้านแก่งกระทั่ง", "13": "รพ.สต.บ้านแก่งกระทั่ง", "18": "รพ.สต.บ้านแก่งกระทั่ง", "19": "รพ.สต.บ้านแก่งกระทั่ง", "7": "รพ.สต.บ้านไทยพัฒนา", "8": "รพ.สต.บ้านไทยพัฒนา", "9": "รพ.สต.บ้านไทยพัฒนา", "10": "รพ.สต.บ้านไทยพัฒนา", "12": "รพ.สต.บ้านไทยพัฒนา", "15": "รพ.สต.บ้านไทยพัฒนา", "16": "รพ.สต.บ้านไทยพัฒนา", "2": "รพ.สต.นาสัก", "4": "รพ.สต.นาสัก", "5": "รพ.สต.นาสัก", "14": "รพ.สต.นาสัก", "17": "รพ.สต.นาสัก" }, "ทุ่งระยะ": { "5": "รพ.สต.บ้านคสองน้อย", "6": "รพ.สต.บ้านคสองน้อย", "7": "รพ.สต.บ้านคสองน้อย", "8": "รพ.สต.บ้านคสองน้อย", "9": "รพ.สต.บ้านคสองน้อย", "10": "รพ.สต.บ้านคสองน้อย", "1": "รพ.สต.ทุ่งระยะ", "2": "รพ.สต.ทุ่งระยะ", "3": "รพ.สต.ทุ่งระยะ", "4": "รพ.สต.ทุ่งระยะ", "11": "รพ.สต.ทุ่งระยะ" }, "วิสัยใต้": { "1": "รพ.สต.บ้านดอนทราย", "3": "รพ.สต.บ้านดอนทราย", "4": "รพ.สต.บ้านดอนทราย", "8": "รพ.สต.บ้านดอนทราย", "2": "รพ.สต.วิสัยใต้", "5": "รพ.สต.วิสัยใต้", "6": "รพ.สต.วิสัยใต้", "7": "รพ.สต.วิสัยใต้", "9": "รพ.สต.วิสัยใต้", "10": "รพ.สต.วิสัยใต้" }, "ครน": { "1": "รพ.สต.ครน", "2": "รพ.สต.ครน", "3": "รพ.สต.ครน", "4": "รพ.สต.ครน", "6": "รพ.สต.ครน", "12": "รพ.สต.ครน", "9": "รพ.สต.บ้านควนสามัคคี", "10": "รพ.สต.บ้านควนสามัคคี", "13": "รพ.สต.บ้านควนสามัคคี", "14": "รพ.สต.บ้านควนสามัคคี", "5": "รพ.สต.บ้านน้ำฉา", "7": "รพ.สต.บ้านน้ำฉา", "8": "รพ.สต.บ้านน้ำฉา", "11": "รพ.สต.บ้านน้ำฉา" }, "นาโพธิ์": "รพ.สวี (นาโพธิ์)" };
             let hosp = hospitals[tb];
             if (typeof hosp === 'object') hosp = hosp[moo] || '';
             $('#pcu').val(hosp || 'ไม่พบข้อมูล');
         }
 
+        // --- Validation and Alerting ---
         function showAlert(title, message) {
             $('#alertModalTitle').text(title);
             $('#alertModalText').text(message);
@@ -331,10 +336,9 @@
         }
         
         function validateAllInputs() {
-            $('.input-error').removeClass('input-error'); // Clear previous errors
+            $('.input-error').removeClass('input-error');
             const errors = [];
             
-            // Validate calculation inputs first
             if (!validateCalculationInputs(false)) {
                 errors.push('• กรุณากรอกข้อมูลการประเมินความเสี่ยงให้ครบถ้วน');
             }
@@ -364,7 +368,6 @@
                 'การระบุผลเลือด': $('input[name="useCholesterol"]:checked').val()
             };
             
-            // Conditionally add fields to check
             if ($('input[name="useCholesterol"]:checked').val() === '1') {
                 inputs['Total Cholesterol'] = $('#tc').val();
             } else {
@@ -383,10 +386,8 @@
         // --- Risk Calculation and Display ---
         function calculateRisk() {
             const hasHistoryOfStroke = $('input[name="ud"][value="โรคหลอดเลือดสมอง"]').is(':checked');
-
             let age = parseFloat($('#age').val()) || 0;
             age = Math.max(30, Math.min(age, 70));
-            
             let sbp = parseFloat($('#sbp').val()) || 0;
             const sbpForCalc = Math.max(70, Math.min(sbp, 220));
 
@@ -406,7 +407,7 @@
             let compare_risk = 0;
 
             if (hasHistoryOfStroke) {
-                predicted_risk = 0.45; // Assign a very high risk > 40%
+                predicted_risk = 0.45;
                 const compareResult = TASCVDformular(inputs.age, 0, 0, 0, inputs.sex, NaN, whr);
                 compare_risk = compareResult[3];
             } else {
@@ -490,7 +491,7 @@
             return { mainAdvice, finalAdvice, fullText: mainAdvice + "\n\n" + finalAdvice };
         }
 
-        // --- Data Submission -----------
+        // --- Data Submission ---
         async function runSave(event) {
             if (!validateAllInputs()) return;
             if (!userProfile) { showAlert('เกิดข้อผิดพลาด', 'ยังไม่สามารถดึงข้อมูลผู้ใช้ LINE ได้ กรุณาลองเปิดใหม่อีกครั้ง'); return; }
@@ -535,31 +536,26 @@
                 saveButton.innerText = 'บันทึกประวัติ';
             }
         }
-                
-        // This is the full, correct formula with both calculation paths.
+        
+        // --- Core Calculation Formulas ---
         function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr) {
             const sur_root = 0.964588;
             let full_score = 0, compare_score = 0, predicted_risk = 0, compare_risk = 0;
             const compare_sbp = sex == 1 ? (age > 60 ? 132 : 120) : (age > 60 ? 130 : 115);
             
-            // Path 1: Use Cholesterol if available (tc > 0)
             if (!isNaN(tc) && tc > 0) {
                 full_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke);
                 predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.04423)));
-                
                 compare_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * compare_sbp) + (0.00212 * 200);
                 compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.04423)));
-            
-            // Path 2: Use Waist-to-Height ratio if Cholesterol is not available
             } else if (!isNaN(whr) && whr > 0) {
                 const compare_whr = sex == 1 ? 0.58125 : 0.52667;
                 full_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke);
                 predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.712325)));
-                
                 compare_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * compare_sbp) + (3.512566 * compare_whr);
                 compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.712325)));
             } else {
-                return [0, 0, 0, 0]; // Not enough data
+                return [0, 0, 0, 0];
             }
             return [full_score, predicted_risk, compare_score, compare_risk];
         }

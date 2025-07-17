@@ -33,6 +33,25 @@
         .progress-bar { height: 100%; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.4); transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; width: 0%; }
         #credit { font-size: 10px; color: #999; text-align: center; margin-top: 20px; }
         .info-icon { font-size: 18px; cursor: pointer; color: #007BFF; margin-left: 8px; font-style: normal; border: 1px solid #007BFF; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* NEW: Styles for suggestion list */
+        #result-text ul {
+            list-style-type: none;
+            padding-left: 0;
+            text-align: left;
+        }
+        #result-text li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        #result-text li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #007BFF;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -100,8 +119,8 @@
     </div>
 
     <script>
-        const LIFF_ID = '2005789397-nebQ8oJy'; // กรุณาใส่ LIFF ID ของคุณ
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec'; // กรุณาใส่ GAS URL ของคุณ
+        const LIFF_ID = '2005789397-nebQ8oJy';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec';
         let userProfile = null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -151,11 +170,32 @@
                  $('#result-container').hide();
              }
         }
+        
+        // NEW: Helper function to format date-time string
+        function formatThaiDateTime(isoString) {
+            if (!isoString) return '';
+            try {
+                const date = new Date(isoString);
+                if (isNaN(date)) return isoString; // Return original string if it's not a valid date
 
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear() + 543;
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                
+                return `${day}/${month}/${year} เวลา ${hours}:${minutes} น.`;
+            } catch (e) {
+                return isoString; // In case of any error, return the original string
+            }
+        }
+        
+        // UPDATED: handleUserRegistration now uses the new date formatting function
         function handleUserRegistration(response) {
             if (response.status === 'found' && response.data) {
                 const record = response.data;
-                $('#registration-status').html(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${record.timestamp}`).show();
+                const formattedTimestamp = formatThaiDateTime(record.timestamp);
+                $('#registration-status').html(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${formattedTimestamp}`).show();
 
                 if (record.name) $('#name').val(record.name);
                 if (record.telephone) $('#telephone').val(record.telephone);
@@ -202,71 +242,75 @@
 
         function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr, wc) { var full_score = 0, compare_score = 0, predicted_risk = 0, compare_risk = 0; var compare_whr = sex == 0 ? 0.52667 : 0.58125; var compare_wc = sex == 0 ? 79 : 93; var compare_sbp = 120; if (sex == 1 && age > 60) { compare_sbp = 132; } if (sex == 0 && age <= 60) { compare_sbp = 115; } if (sex == 0 && age > 60) { compare_sbp = 130; } var sur_root = 0.964588; if (tc > 0) { full_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke); predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.04423))); compare_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * compare_sbp) + (0.00212 * 200); compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.04423))); } else if (whr > 0) { full_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke); predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.712325))); compare_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * compare_sbp) + (3.512566 * compare_whr); compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.712325))); } else if (wc > 0) { full_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * sbp) + (0.59953 * dm) + (0.01283 * wc) + (0.459 * smoke); predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.31047))); compare_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * compare_sbp) + (0.01283 * compare_wc); compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.31047))); } return [full_score, predicted_risk, compare_score, compare_risk]; }
         
-        // --- UPDATED: Risk classification logic ---
         function calculateRisk() { 
             const hasHistoryOfStroke = $('input[name="ud"][value="โรคหลอดเลือดสมอง"]').is(':checked'); 
             const rawInputs = { age: parseFloat($('#age').val()) || 0, sbp: parseFloat($('#sbp').val()) || 0, tc: parseFloat($('#tc').val()) || 0, smoke: +$('input[name="smoke"]:checked').val(), dm: +$('input[name="dm"]:checked').val(), sex: +$('input[name="sex"]:checked').val(), wc_inch: parseFloat($('#wc').val()) || 0, ht: parseFloat($('#bdh').val()) || 0 }; 
-            
-            if (hasHistoryOfStroke) {
-                return { 
-                    riskData: { 
-                        riskPercentText: "≥40%", 
-                        barValue: 40, 
-                        riskGroup: "สูงอันตราย (มีประวัติสโตรก)", // Updated name
-                        riskColor: "#8B0000", // Dark Red
-                        compareRatio: "N/A" 
-                    }, 
-                    inputs: rawInputs 
-                }; 
-            }
-            
+            if (hasHistoryOfStroke) { return { riskData: { riskPercentText: "≥40%", barValue: 40, riskGroup: "สูงอันตราย (มีประวัติสโตรก)", riskColor: "#8B0000", compareRatio: "N/A" }, inputs: rawInputs }; }
             const clampedInputs = { age: Math.max(30, Math.min(rawInputs.age, 70)), sbp: Math.max(70, Math.min(rawInputs.sbp, 220)), tc: rawInputs.tc > 0 ? Math.min(rawInputs.tc, 280) : 0, wc_cm: !isNaN(rawInputs.wc_inch) ? rawInputs.wc_inch * 2.54 : 0 }; 
             clampedInputs.whr = clampedInputs.wc_cm > 0 && rawInputs.ht > 0 ? clampedInputs.wc_cm / rawInputs.ht : 0;
-            
             const calcResult = TASCVDformular(clampedInputs.age, rawInputs.smoke, rawInputs.dm, clampedInputs.sbp, rawInputs.sex, clampedInputs.tc, clampedInputs.whr, clampedInputs.wc_cm); 
             const predicted_risk = calcResult[1]; 
             let riskData = {}; 
-
             riskData.riskPercentText = (predicted_risk * 100).toFixed(0) + "%";
             riskData.barValue = predicted_risk * 100;
-
             const riskClassification = classifyRisk(predicted_risk); 
             riskData.riskGroup = riskClassification.text; 
             riskData.riskColor = riskClassification.color; 
             riskData.compareRatio = (calcResult[3] > 0 && predicted_risk >= 0) ? (predicted_risk / calcResult[3]).toFixed(1) : "N/A"; 
-            
             return { riskData, inputs: rawInputs }; 
         }
         
-        // --- UPDATED: New risk group names and colors ---
-        function classifyRisk(risk) { // risk is a float from 0.0 to 1.0
-            if (risk < 0.10) return { text: "ต่ำ", color: "#28a745" };         // <10%
-            if (risk < 0.20) return { text: "ปานกลาง", color: "#ffc107" }; // 10% - <20%
-            if (risk < 0.30) return { text: "สูง", color: "#fd7e14" };       // 20% - <30%
-            if (risk < 0.40) return { text: "สูงมาก", color: "#dc3545" };   // 30% - <40%
-            return { text: "สูงอันตราย", color: "#8B0000" };                  // >=40%
+        function classifyRisk(risk) {
+            if (risk < 0.10) return { text: "ต่ำ", color: "#28a745" };
+            if (risk < 0.20) return { text: "ปานกลาง", color: "#ffc107" };
+            if (risk < 0.30) return { text: "สูง", color: "#fd7e14" };
+            if (risk < 0.40) return { text: "สูงมาก", color: "#dc3545" };
+            return { text: "สูงอันตราย", color: "#8B0000" };
         }
         
+        // UPDATED: generateSuggestionText now returns an array for list formatting
         function generateSuggestionText(inputs) { 
             let suggestions = []; 
-            if (inputs.age < 40) { suggestions.push('• ปัจจุบันพบโรคหลอดเลือดสมองในคนอายุน้อย (Stroke in the Young) มากขึ้น ควรใส่ใจดูแลสุขภาพแต่เนิ่นๆ'); } 
-            if (inputs.smoke === 1) suggestions.push('• เลิกสูบบุหรี่'); 
-            if (inputs.dm === 1) suggestions.push('• รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ'); 
-            if (inputs.sbp >= 140) suggestions.push('• ควบคุมระดับความดันโลหิต (เป้าหมาย < 140/90 mmHg)'); 
-            if (inputs.tc > 0 && inputs.tc >= 220) suggestions.push('• ควบคุมระดับไขมันในเลือด'); 
+            if (inputs.age < 40) { suggestions.push('ปัจจุบันพบโรคหลอดเลือดสมองในคนอายุน้อย (Stroke in the Young) มากขึ้น ควรใส่ใจดูแลสุขภาพแต่เนิ่นๆ'); } 
+            if (inputs.smoke === 1) suggestions.push('เลิกสูบบุหรี่'); 
+            if (inputs.dm === 1) suggestions.push('รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ'); 
+            if (inputs.sbp >= 140) suggestions.push('ควบคุมระดับความดันโลหิต (เป้าหมาย < 140/90 mmHg)'); 
+            if (inputs.tc > 0 && inputs.tc >= 220) suggestions.push('ควบคุมระดับไขมันในเลือด'); 
             const wc_cm = inputs.wc_inch * 2.54; 
-            if (inputs.tc <= 0 && ((inputs.sex === 1 && wc_cm >= 90) || (inputs.sex === 0 && wc_cm >= 80))) { suggestions.push('• ลดน้ำหนัก/รอบเอว (เป้าหมาย: ชาย < 90 ซม., หญิง < 80 ซม.)'); } 
-            let mainAdvice = "ปัจจัยเสี่ยงที่ควรจัดการ:\n" + suggestions.join("\n"); 
-            if (suggestions.length === 0) { mainAdvice = "คุณไม่มีปัจจัยเสี่ยงที่ผิดปกติ แต่ควรรักษาวิถีชีวิตที่ส่งเสริมสุขภาพดีต่อไป"; } 
-            const finalAdvice = 'เรียนรู้สัญญาณเตือนสโตรก <strong style="color: #198754;">B.E.F.A.S.T.</strong> (หน้าเบี้ยว, แขนขาอ่อนแรง, พูดไม่ชัด) เพื่อรีบไปโรงพยาบาลให้ทันเวลา'; 
-            return { mainAdvice, finalAdvice }; 
+            if (inputs.tc <= 0 && ((inputs.sex === 1 && wc_cm >= 90) || (inputs.sex === 0 && wc_cm >= 80))) { suggestions.push('ลดน้ำหนัก/รอบเอว (เป้าหมาย: ชาย < 90 ซม., หญิง < 80 ซม.)'); } 
+            
+            if (suggestions.length === 0) { suggestions.push("คุณไม่มีปัจจัยเสี่ยงที่ผิดปกติ แต่ควรรักษาวิถีชีวิตที่ส่งเสริมสุขภาพดีต่อไป"); } 
+            
+            const finalAdvice = 'เรียนรู้สัญญาณเตือนสโตรก <strong style="color: #198754;">B.E.F.A.S.T.</strong> (หน้าเบี้ยว, แขนขาอ่อนแรง, พูดไม่ชัด) เพื่อรีบไปโรงพยาบาลให้ทันเวลา';
+            
+            // Return suggestions and final advice separately
+            return { suggestions, finalAdvice }; 
         }
         
+        // UPDATED: displayResults now builds a <ul> list for suggestions
         function displayResults(riskData, inputs) { 
-            const suggestions = generateSuggestionText(inputs); 
+            const { suggestions, finalAdvice } = generateSuggestionText(inputs); 
             let compareText = `ซึ่งเมื่อเทียบกับคนเพศเดียวกัน อายุเท่ากัน แต่ไม่มีปัจจัยเสี่ยงเลย ความเสี่ยงของคุณจะอยู่ที่ ${riskData.compareRatio} เท่า`; 
-            if (riskData.compareRatio === "N/A" || isNaN(parseFloat(riskData.compareRatio))) { compareText = ""; } 
-            const resultHtml = `<div class="progress-bar-container"><div class="progress-bar" style="width: ${riskData.barValue}%; background-color: ${riskData.riskColor};">${riskData.riskPercentText}</div></div><p style="font-size: 1.1rem; font-weight: 500;">ความเสี่ยง 10 ปี: <strong>${riskData.riskPercentText} (${riskData.riskGroup})</strong></p><p>${compareText}</p><hr><p><strong>ข้อแนะนำเบื้องต้น</strong></p><p style="white-space: pre-wrap;">${suggestions.mainAdvice}</p><p style="margin-top: 15px; text-align: center;">${suggestions.finalAdvice}</p>`; 
+            if (riskData.compareRatio === "N/A" || isNaN(parseFloat(riskData.compareRatio))) { compareText = ""; }
+
+            // Build the HTML for the suggestion list
+            let suggestionsHtml = '<ul>';
+            suggestions.forEach(item => {
+                suggestionsHtml += `<li>${item}</li>`;
+            });
+            suggestionsHtml += `<li>${finalAdvice}</li>`; // Add final advice as the last item
+            suggestionsHtml += '</ul>';
+
+            const resultHtml = `
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${riskData.barValue}%; background-color: ${riskData.riskColor};">${riskData.riskPercentText}</div>
+                </div>
+                <p style="font-size: 1.1rem; font-weight: 500;">ความเสี่ยง 10 ปี: <strong>${riskData.riskPercentText} (${riskData.riskGroup})</strong></p>
+                <p>${compareText}</p>
+                <hr>
+                <p style="text-align:left;"><strong>ข้อแนะนำเบื้องต้น</strong></p>
+                ${suggestionsHtml}
+            `; 
             $('#result-text').html(resultHtml).parent().show(); 
         }
         
@@ -276,9 +320,30 @@
             const saveButton = $(event.target); 
             saveButton.prop('disabled', true).text('กำลังบันทึก...'); 
             const { riskData, inputs } = calculateRisk(); 
-            const suggestions = generateSuggestionText(inputs); 
-            const suggestionText = `${suggestions.mainAdvice}\n\n${suggestions.finalAdvice.replace(/<[^>]*>?/gm, '')}`; 
-            const dataToSend = { name: $('#name').val().trim() || userProfile.displayName, role: $('#role').val(), isSawiPatient: $('input[name="isSawiPatient"]:checked').val(), telephone: $('#telephone').val(), hn: $('#hn').val(), district: $('#district').val(), village: $('#village').val(), pcu: $('#pcu').val(), ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '), ...inputs, thai_cv_risk_score: riskData.riskPercentText.replace(/[^0-9.]/g, ''), risk_group: riskData.riskGroup, compare_ratio: riskData.compareRatio, suggestionText: suggestionText, userId: userProfile.userId, displayName: userProfile.displayName, pictureUrl: userProfile.pictureUrl, }; 
+            
+            // Generate suggestions again to get the text version for saving
+            const { suggestions, finalAdvice } = generateSuggestionText(inputs);
+            const suggestionText = suggestions.join('\n') + '\n\n' + finalAdvice.replace(/<[^>]*>?/gm, '');
+
+            const dataToSend = { 
+                name: $('#name').val().trim() || userProfile.displayName, 
+                role: $('#role').val(), 
+                isSawiPatient: $('input[name="isSawiPatient"]:checked').val(), 
+                telephone: $('#telephone').val(), 
+                hn: $('#hn').val(), 
+                district: $('#district').val(), 
+                village: $('#village').val(), 
+                pcu: $('#pcu').val(), 
+                ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '), 
+                ...inputs, 
+                thai_cv_risk_score: riskData.riskPercentText.replace(/[^0-9.]/g, ''), 
+                risk_group: riskData.riskGroup, 
+                compare_ratio: riskData.compareRatio, 
+                suggestionText: suggestionText, 
+                userId: userProfile.userId, 
+                displayName: userProfile.displayName, 
+                pictureUrl: userProfile.pictureUrl, 
+            }; 
             try { 
                 const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(dataToSend), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }); 
                 const result = await response.json(); 

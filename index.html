@@ -115,7 +115,7 @@
             
             <div class="form-group">
                 <label for="age">อายุ (ปี):</label>
-                <div class="input-wrapper"><input type="number" id="age" class="calc-input" placeholder="30-70 ปี"></div>
+                <div class="input-wrapper"><input type="number" id="age" class="calc-input"></div>
             </div>
             <div class="form-group">
                 <label>เพศ:</label>
@@ -140,7 +140,7 @@
             </div>
             <div class="form-group">
                 <label for="sbp">ความดัน (ตัวบน):</label>
-                <div class="input-wrapper"><input type="number" id="sbp" class="calc-input" placeholder="70-220 mmHg"></div>
+                <div class="input-wrapper"><input type="number" id="sbp" class="calc-input"></div>
             </div>
             
             <div class="form-group">
@@ -153,7 +153,7 @@
             <div id="tc_group" style="display:none;">
                 <div class="form-group">
                     <label for="tc">Total Cholesterol:</label>
-                    <div class="input-wrapper"><input type="number" id="tc" class="calc-input" placeholder="น้อยกว่า 280 mg/dL"></div>
+                    <div class="input-wrapper"><input type="number" id="tc" class="calc-input"></div>
                 </div>
             </div>
             <div id="body_measure_group">
@@ -174,7 +174,7 @@
 
         <button id="saveButton" onclick="runSave(event)">บันทึกประวัติ</button>
         
-        <div id="credit">จัดทำโดย รพ.สวี จ.ชุมพร</div>
+        <div id="credit">จัดทำโดย "สวีรู้ทันสโตรก" รพ.สวี จ.ชุมพร</div>
     </div>
     
     <div id="successModal" class="modal"><div class="modal-content"><p>บันทึกผลเรียบร้อยแล้ว</p><button id="modal-ok-btn">ตกลง</button></div></div>
@@ -355,6 +355,9 @@
 
         function generateSuggestionText(inputs) {
             let suggestions = [];
+            if (inputs.age < 40) {
+                suggestions.push('• ปัจจุบันพบโรคหลอดเลือดสมองในคนอายุน้อย (Stroke in the Young) มากขึ้น ควรใส่ใจดูแลสุขภาพแต่เนิ่นๆ');
+            }
             if (inputs.smoke === 1) suggestions.push('• เลิกสูบบุหรี่');
             if (inputs.dm === 1) suggestions.push('• รักษาระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ');
             if (inputs.sbp >= 140) suggestions.push('• ควบคุมระดับความดันโลหิต (เป้าหมาย < 140/90 mmHg)');
@@ -365,16 +368,20 @@
                 suggestions.push('• ลดน้ำหนัก/รอบเอว (เป้าหมาย: ชาย < 90 ซม., หญิง < 80 ซม.)');
             }
 
-            if (suggestions.length > 0) {
-                return "ปัจจัยเสี่ยงที่ควรจัดการ:\n" + suggestions.join("\n");
+            let mainAdvice = "ปัจจัยเสี่ยงที่ควรจัดการ:\n" + suggestions.join("\n");
+            if (suggestions.length === 0) {
+                mainAdvice = "คุณไม่มีปัจจัยเสี่ยงที่ผิดปกติ แต่ควรรักษาวิถีชีวิตที่ส่งเสริมสุขภาพดีต่อไป";
             }
-            return "คุณไม่มีปัจจัยเสี่ยงที่ผิดปกติ แต่ควรรักษาวิถีชีวิตที่ส่งเสริมสุขภาพดีต่อไป";
+            
+            const finalAdvice = 'เรียนรู้สัญญาณเตือนสโตรก <strong style="color: #198754;">B.E.F.A.S.T.</strong> (หน้าเบี้ยว, แขนขาอ่อนแรง, พูดไม่ชัด) เพื่อรีบไปโรงพยาบาลให้ทันเวลา';
+            
+            return { mainAdvice, finalAdvice };
         }
 
         function displayResults(riskData, inputs) {
             const suggestions = generateSuggestionText(inputs);
             let compareText = `ซึ่งเมื่อเทียบกับคนเพศเดียวกัน อายุเท่ากัน แต่ไม่มีปัจจัยเสี่ยงเลย ความเสี่ยงของคุณจะอยู่ที่ ${riskData.compareRatio} เท่า`;
-             if (riskData.compareRatio === "N/A") {
+             if (riskData.compareRatio === "N/A" || isNaN(parseFloat(riskData.compareRatio))) {
                 compareText = "";
             }
 
@@ -382,12 +389,12 @@
                 <div class="progress-bar-container">
                     <div class="progress-bar" style="width: ${riskData.barValue}%; background-color: ${riskData.riskColor};">${riskData.riskPercentText}</div>
                 </div>
-                <p>ความเสี่ยงต่อการเกิดโรคหัวใจและหลอดเลือดใน 10 ปี: <strong>${riskData.riskPercentText}</strong></p>
-                <p><strong>(${riskData.riskGroup})</strong></p>
+                <p style="font-size: 1.1rem; font-weight: 500;">ความเสี่ยง 10 ปี: <strong>${riskData.riskPercentText} (${riskData.riskGroup})</strong></p>
                 <p>${compareText}</p>
                 <hr>
                 <p><strong>ข้อแนะนำเบื้องต้น</strong></p>
-                <p style="white-space: pre-wrap;">${suggestions}</p>
+                <p style="white-space: pre-wrap;">${suggestions.mainAdvice}</p>
+                <p style="margin-top: 15px; text-align: center;">${suggestions.finalAdvice}</p>
             `;
             $('#result-text').html(resultHtml).parent().show();
         }
@@ -400,7 +407,8 @@
             saveButton.prop('disabled', true).text('กำลังบันทึก...');
 
             const { riskData, inputs } = calculateRisk();
-            const suggestionText = generateSuggestionText(inputs);
+            const suggestions = generateSuggestionText(inputs);
+            const suggestionText = `${suggestions.mainAdvice}\n\n${suggestions.finalAdvice.replace(/<[^>]*>?/gm, '')}`; // Strip HTML for saving
 
             const dataToSend = {
                 name: $('#name').val().trim() || userProfile.displayName,

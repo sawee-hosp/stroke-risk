@@ -76,15 +76,18 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <label for="lineId">LINE ID:</label>
-    <div class="input-wrapper">
-      <input type="text" id="lineId">
-    </div>
-    <div style="font-size:12px; color:#666; margin-top:4px;">
-      ไปที่ ⚙️ &gt; โปรไฟล์ &gt; LINE ID &gt; คัดลอก
-    </div>
+<div class="form-group">
+  <label for="lineId">LINE ID:</label>
+  <div class="input-wrapper" style="display: flex; align-items: center;">
+    <input type="text" id="lineId" style="flex: 1;">
+    <button type="button" id="pasteLineIdBtn" style="margin-left: 8px; padding: 4px 8px; font-size: 0.75rem; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+      วาง
+    </button>
   </div>
+  <div style="font-size:12px; color:#666; margin-top:4px;">
+    ไปที่ ⚙️ &gt; โปรไฟล์ &gt; LINE ID &gt; คัดลอก
+  </div>
+</div>
 
   <div class="form-group checkbox-group">
     <label>
@@ -204,7 +207,14 @@
             populateVillageDropdown();
             toggleMeasurementFields();
         });
-
+ $('#pasteLineIdBtn').on('click', async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      $('#lineId').val(text.trim());
+    } catch (err) {
+      showAlert('ไม่สามารถเข้าถึงคลิปบอร์ด', 'กรุณากด Ctrl+V เพื่อวางค่าด้วยตนเอง');
+    }
+  });
         async function initializeLiff() {
             try {
                 await liff.init({ liffId: LIFF_ID });
@@ -285,6 +295,15 @@ $('#village, #district').on('change', () => {
                     $('#village').val(record.village);
                     $('#district').trigger('change'); 
                 }
+                    if (record.line_id) {
+      $('#lineId').val(record.line_id);
+    }
+        if (record.help) {
+      record.help.split(', ').forEach(val => {
+        $(`input[name="help"][value="${val}"]`).prop('checked', true);
+      });
+    }
+
             }
         }
 
@@ -321,23 +340,89 @@ $('#village, #district').on('change', () => {
 
         function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr, wc) { var full_score = 0, compare_score = 0, predicted_risk = 0, compare_risk = 0; var compare_whr = sex == 0 ? 0.52667 : 0.58125; var compare_wc = sex == 0 ? 79 : 93; var compare_sbp = 120; if (sex == 1 && age > 60) { compare_sbp = 132; } if (sex == 0 && age <= 60) { compare_sbp = 115; } if (sex == 0 && age > 60) { compare_sbp = 130; } var sur_root = 0.964588; if (tc > 0) { full_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke); predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.04423))); compare_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * compare_sbp) + (0.00212 * 200); compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.04423))); } else if (whr > 0) { full_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke); predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.712325))); compare_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * compare_sbp) + (3.512566 * compare_whr); compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.712325))); } else if (wc > 0) { full_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * sbp) + (0.59953 * dm) + (0.01283 * wc) + (0.459 * smoke); predicted_risk = 1 - (Math.pow(sur_root, Math.exp(full_score - 7.31047))); compare_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * compare_sbp) + (0.01283 * compare_wc); compare_risk = 1 - (Math.pow(sur_root, Math.exp(compare_score - 7.31047))); } return [full_score, predicted_risk, compare_score, compare_risk]; }
         
-        function calculateRisk() { 
-            const hasHistoryOfStroke = $('input[name="ud"][value="โรคหลอดเลือดสมอง"]').is(':checked'); 
-            const rawInputs = { age: parseFloat($('#age').val()) || 0, sbp: parseFloat($('#sbp').val()) || 0, tc: parseFloat($('#tc').val()) || 0, smoke: +$('input[name="smoke"]:checked').val(), dm: +$('input[name="dm"]:checked').val(), sex: +$('input[name="sex"]:checked').val(), wc_inch: parseFloat($('#wc').val()) || 0, ht: parseFloat($('#bdh').val()) || 0 }; 
-            if (hasHistoryOfStroke) { return { riskData: { riskPercentText: "≥40%", barValue: 40, riskGroup: "สูงอันตราย (มีประวัติสโตรก)", riskColor: "#8B0000", compareRatio: "N/A" }, inputs: rawInputs }; }
-            const clampedInputs = { age: Math.max(30, Math.min(rawInputs.age, 70)), sbp: Math.max(70, Math.min(rawInputs.sbp, 220)), tc: rawInputs.tc > 0 ? Math.min(rawInputs.tc, 280) : 0, wc_cm: !isNaN(rawInputs.wc_inch) ? rawInputs.wc_inch * 2.54 : 0 }; 
-            clampedInputs.whr = clampedInputs.wc_cm > 0 && rawInputs.ht > 0 ? clampedInputs.wc_cm / rawInputs.ht : 0;
-            const calcResult = TASCVDformular(clampedInputs.age, rawInputs.smoke, rawInputs.dm, clampedInputs.sbp, rawInputs.sex, clampedInputs.tc, clampedInputs.whr, clampedInputs.wc_cm); 
-            const predicted_risk = calcResult[1]; 
-            let riskData = {}; 
-            riskData.riskPercentText = (predicted_risk * 100).toFixed(0) + "%";
-            riskData.barValue = predicted_risk * 100;
-            const riskClassification = classifyRisk(predicted_risk); 
-            riskData.riskGroup = riskClassification.text; 
-            riskData.riskColor = riskClassification.color; 
-            riskData.compareRatio = (calcResult[3] > 0 && predicted_risk >= 0) ? (predicted_risk / calcResult[3]).toFixed(1) : "N/A"; 
-            return { riskData, inputs: rawInputs }; 
-        }
+function calculateRisk() {
+  // 1) 把所有输入先读到一个对象里
+  const rawInputs = {
+    age:        parseFloat($('#age').val())    || 0,
+    sex:        +$('input[name="sex"]:checked').val(),
+    smoke:      +$('input[name="smoke"]:checked').val(),
+    dm:         +$('input[name="dm"]:checked').val(),
+    sbp:        parseFloat($('#sbp').val())    || 0,
+    tc:         $('input[name="useCholesterol"]:checked').val() === '1'
+                  ? parseFloat($('#tc').val()) || 0
+                  : 0,
+    wc_inch:    $('input[name="useCholesterol"]:checked').val() === '0'
+                  ? parseFloat($('#wc').val()) || 0
+                  : 0,
+    ht:         $('input[name="useCholesterol"]:checked').val() === '0'
+                  ? parseFloat($('#bdh').val())|| 0
+                  : 0,
+    hasStrokeHistory:
+      $('input[name="ud"][value="โรคหลอดเลือดสมอง"]').is(':checked')
+  };
+
+  // 2) ถ้ามีประวัติ Stroke → risk >40%
+  if (rawInputs.hasStrokeHistory) {
+    return {
+      riskData: {
+        riskPercentText: '>40%',
+        barValue: 30,       // for chart cap at 30
+        riskGroup: 'สูงอันตราย (มีประวัติสโตรก)',
+        riskColor: '#8B0000',
+        compareRatio: 'N/A'
+      },
+      inputs: rawInputs
+    };
+  }
+
+  // 3) คำนวณ predicted_risk ตามสูตรเดิม
+  //    (copy–paste TASCVDformular logic or call your helper)
+  const wc_cm = rawInputs.wc_inch * 2.54;
+  const whr   = wc_cm > 0 && rawInputs.ht > 0
+                ? wc_cm / rawInputs.ht
+                : 0;
+  const clamped = {
+    age:  Math.max(30, Math.min(rawInputs.age, 70)),
+    sbp:  Math.max(70, Math.min(rawInputs.sbp, 220)),
+    tc:   rawInputs.tc > 0 ? Math.min(rawInputs.tc, 280) : 0,
+    whr:  whr,
+    wc_cm: wc_cm
+  };
+  const [ , predicted_risk, , compare_risk ] =
+    TASCVDformular(
+      clamped.age, rawInputs.smoke, rawInputs.dm, clamped.sbp,
+      rawInputs.sex, clamped.tc, clamped.whr, clamped.wc_cm
+    );
+
+  // 4) ตีกรอบ % และ cap chart
+  let percentNum = predicted_risk * 100;
+  let barValue   = percentNum;
+  let percentTxt = `${Math.round(percentNum)}%`;
+
+  if (percentNum > 30) {
+    barValue   = 30;
+    percentTxt = '>30%';
+  }
+
+  // 5) สร้าง riskData object
+  const classification = classifyRisk(predicted_risk);
+  const riskData = {
+    riskPercentText: percentTxt,
+    barValue:        barValue,
+    riskGroup:       classification.text,
+    riskColor:       classification.color,
+    compareRatio:    compare_risk > 0
+                     ? compare_risk.toFixed(1)
+                     : 'N/A'
+  };
+
+  // 6) คืนค่าสุดท้าย
+  return {
+    riskData: riskData,
+    inputs:   rawInputs
+  };
+}
+
         
         function classifyRisk(risk) {
             if (risk < 0.10) return { text: "ต่ำ", color: "#28a745" };
@@ -430,6 +515,7 @@ async function runSave(event) {
     village: $('#village').val(),
     pcu: $('#pcu').val(),
     ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '),
+    help: $('input[name="help"]:checked').map((_,el)=>$(el).val()).get().join(', '),
 
     age: inputs.age,
     gender: inputs.sex,

@@ -71,14 +71,19 @@
             <div id="patientForm">
                 <div class="form-group"> <label for="telephone">เบอร์โทรศัพท์:</label> <div class="input-wrapper"><input type="text" id="telephone" placeholder="ตัวเลข 10 หลัก ไม่ต้องใส่ขีด"></div> </div>
                 <div class="form-group">
+<div class="form-group">
   <label for="lineId">LINE ID:</label>
   <div class="input-wrapper">
-    <input type="text" id="lineId" placeholder="ไปที่ ⚙️ > โปรไฟล์ > LINE ID > คัดลอก">
+    <input type="text" id="lineId">
   </div>
+  <!-- คำเตือนเล็กๆ ด้านล่าง ไม่ใช่ placeholder -->
+  <small style="font-size:12px; color:#666; display:block; margin-top:4px;">
+    ไปที่ ⚙️ > โปรไฟล์ > LINE ID > คัดลอก
+  </small>
 </div>
 <div class="form-group checkbox-group">
   <label>
-    <input type="checkbox" id="allowTel"> ยินยอมให้ข้อมูลส่วนบุคคลถูกแชร์กับ อสม./เจ้าหน้าที่สาธารณสุข ในพื้นที่เพื่อการดูแลสุขภาพ
+    <input type="checkbox" id="allowTel" checked> ยินยอมให้ข้อมูลส่วนบุคคลถูกแชร์กับ อสม./เจ้าหน้าที่สาธารณสุข ในพื้นที่เพื่อการดูแลสุขภาพ
   </label>
 </div>
 
@@ -113,9 +118,11 @@
         <div id="result-container"> <div id="result-text"></div> </div>
         <div class="form-group checkbox-group">
   <label>
-    <input type="checkbox" id="pdpa"> อนุญาตให้โรงพยาบาลสวี ประมวลผลข้อมูลของท่านเพื่อนำไปวิเคราะห์ความเสี่ยงการเกิดสโตรก
+    <input type="checkbox" id="pdpa" checked> อนุญาตให้โรงพยาบาลสวี ประมวลผลข้อมูลของท่านเพื่อนำไปวิเคราะห์ความเสี่ยงการเกิดสโตรก
   </label>
 </div>
+<input type="hidden" id="area" />
+
         <button id="saveButton" onclick="runSave(event)">บันทึกและดูผลประเมิน</button>
         <div id="credit">จัดทำโดย "สวีรู้ทันสโตรก" รพ.สวี จ.ชุมพร</div>
     </div>
@@ -167,7 +174,11 @@
             });
             $('input[name="useCholesterol"]').on('change', toggleMeasurementFields);
             $('input[name="isSawiPatient"]').on('change', () => $('#patientForm').toggle($('input[name="isSawiPatient"]:checked').val() === '1'));
-            $('#village, #district').on('change', updateAddressAndHospital);
+$('#village, #district').on('change', () => {
+  const areaStr = `ต.${$('#district').val()} ม.${$('#village').val()}`;
+  $('#area').val(areaStr);
+  updateAddressAndHospital();
+});
             $('#modal-ok-btn').on('click', () => { if (liff.isInClient()) liff.closeWindow(); });
             $('#alertModalOkBtn').on('click', () => $('#alertModal').hide());
             
@@ -339,8 +350,8 @@
             const { riskData, inputs } = calculateRisk(); 
             
             // Generate suggestions again to get the text version for saving
-            const { suggestions, finalAdvice } = generateSuggestionText(inputs);
-            const suggestionText = suggestions.join('\n') + '\n\n' + finalAdvice.replace(/<[^>]*>?/gm, '');
+   const { suggestions, finalAdvice } = generateSuggestionText(inputs);
+  const suggestionText = suggestions.join('\n') + '\n' + finalAdvice.replace(/<[^>]*>?/gm, '');
 
             const dataToSend = { 
                 name: $('#name').val().trim() || userProfile.displayName, 
@@ -353,14 +364,23 @@
                 pcu: $('#pcu').val(), 
                 ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '), 
                 ...inputs, 
+                    age: inputs.age,
+    gender: inputs.sex,
+    smoke: inputs.smoke,
+    dm: inputs.dm,
+    sbp: inputs.sbp,
+    cholesterol: inputs.tc,
+    waist: inputs.wc_inch,
+    height: inputs.ht,
                 lineId: $('#lineId').val().trim(),
-allow_tel: $('#allowTel').is(':checked')
-  ? 'อนุญาตให้ติดต่อกลับทางเบอร์โทร'
-  : '',
-pdpa: $('#pdpa').is(':checked')
-  ? 'อนุญาตให้ใช้ข้อมูลส่วนบุคคล'
-  : '',
+    allow_tel: $('#allowTel').is(':checked')
+      ? $('#allowTel').parent().text().trim()
+      : '',
+    pdpa: $('#pdpa').is(':checked')
+      ? $('#pdpa').parent().text().trim()
+      : '',
 area: `ต.${$('#district').val()} ม.${$('#village').val()}`,
+
                 thai_cv_risk_score: riskData.riskPercentText.replace(/[^0-9.]/g, ''), 
                 risk_group: riskData.riskGroup, 
                 compare_ratio: riskData.compareRatio, 
@@ -368,6 +388,7 @@ area: `ต.${$('#district').val()} ม.${$('#village').val()}`,
                 userId: userProfile.userId, 
                 displayName: userProfile.displayName, 
                 pictureUrl: userProfile.pictureUrl, 
+
             }; 
             try { 
                 const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(dataToSend), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }); 

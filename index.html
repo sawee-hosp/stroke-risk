@@ -81,9 +81,9 @@
     <div class="input-wrapper">
       <input type="text" id="lineId">
     </div>
-    <small style="font-size:12px; color:#666; display:block; margin-top:4px;">
-      ไปที่ ⚙️ > โปรไฟล์ > LINE ID > คัดลอก
-    </small>
+    <div style="font-size:12px; color:#666; margin-top:4px;">
+      ไปที่ ⚙️ &gt; โปรไฟล์ &gt; LINE ID &gt; คัดลอก
+    </div>
   </div>
 
   <div class="form-group checkbox-group">
@@ -128,6 +128,16 @@
     <label for="pcu">รพ.สต.:</label>
     <div class="input-wrapper">
       <input type="text" id="pcu" readonly>
+    </div>
+  </div>
+    <div class="form-group checkbox-group">
+    <label>วิธีเดินทางมารพ. (กรณีฉุกเฉิน):</label>
+    <div class="input-wrapper">
+      <label><input type="checkbox" name="help" value="อยู่ตัวคนเดียว"> อยู่ตัวคนเดียว</label>
+      <label><input type="checkbox" name="help" value="ญาติ/คนในบ้านมาส่ง"> ญาติ/คนในบ้านมาส่ง</label>
+      <label><input type="checkbox" name="help" value="คนข้างบ้านมาส่ง"> คนข้างบ้านมาส่ง</label>
+      <label><input type="checkbox" name="help" value="ผู้นำชุมชน"> ผู้นำชุมชน</label>
+      <label><input type="checkbox" name="help" value="รถฉุกเฉิน/กู้ชีพ"> รถฉุกเฉิน/กู้ชีพ</label>
     </div>
   </div>
 </div>
@@ -383,29 +393,45 @@ $('#village, #district').on('change', () => {
             $('#result-text').html(resultHtml).parent().show(); 
         }
         
-        async function runSave(event) { 
-            if (!userProfile) { showAlert('เกิดข้อผิดพลาด', 'ยังไม่สามารถดึงข้อมูลผู้ใช้ LINE ได้'); return; } 
-            if (!validateCalculationInputs()) { showAlert('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลการประเมินความเสี่ยงให้ครบถ้วน'); return; } 
-            const saveButton = $(event.target); 
-            saveButton.prop('disabled', true).text('กำลังบันทึก...'); 
-            const { riskData, inputs } = calculateRisk(); 
-            
-            // Generate suggestions again to get the text version for saving
-   const { suggestions, finalAdvice } = generateSuggestionText(inputs);
+async function runSave(event) {
+  if (!userProfile) {
+    showAlert('เกิดข้อผิดพลาด', 'ยังไม่สามารถดึงข้อมูลผู้ใช้ LINE ได้');
+    return;
+  }
+  if (!validateCalculationInputs()) {
+    showAlert('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลการประเมินความเสี่ยงให้ครบถ้วน');
+    return;
+  }
+
+  const saveButton = $(event.target);
+  saveButton.prop('disabled', true).text('กำลังบันทึก...');
+
+  const { riskData, inputs } = calculateRisk();
+  const { suggestions, finalAdvice } = generateSuggestionText(inputs);
   const suggestionText = suggestions.join('\n') + '\n' + finalAdvice.replace(/<[^>]*>?/gm, '');
 
-            const dataToSend = { 
-                name: $('#name').val().trim() || userProfile.displayName, 
-                role: $('#role').val(), 
-                isSawiPatient: $('input[name="isSawiPatient"]:checked').val(), 
-                telephone: $('#telephone').val(), 
-                hn: $('#hn').val(), 
-                district: $('#district').val(), 
-                village: $('#village').val(), 
-                pcu: $('#pcu').val(), 
-                ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '), 
-                ...inputs, 
-                    age: inputs.age,
+  const dataToSend = {
+    name: $('#name').val().trim() || userProfile.displayName,
+    role: $('#role').val(),
+    isSawiPatient: $('input[name="isSawiPatient"]:checked').val(),
+
+    telephone: $('#telephone').val().trim(),
+    line_id: $('#lineId').val().trim(),
+
+    allow_tel: $('#allowTel').is(':checked')
+      ? $('#allowTel').parent().text().trim()
+      : '',
+    pdpa: $('#pdpa').is(':checked')
+      ? $('#pdpa').parent().text().trim()
+      : '',
+
+    hn: $('#hn').val().trim(),
+    district: $('#district').val(),
+    village: $('#village').val(),
+    pcu: $('#pcu').val(),
+    ud: $('input[name="ud"]:checked').map((_, el) => $(el).val()).get().join(', '),
+
+    age: inputs.age,
     gender: inputs.sex,
     smoke: inputs.smoke,
     dm: inputs.dm,
@@ -413,38 +439,40 @@ $('#village, #district').on('change', () => {
     cholesterol: inputs.tc,
     waist: inputs.wc_inch,
     height: inputs.ht,
-                lineId: $('#lineId').val().trim(),
-    allow_tel: $('#allowTel').is(':checked')
-      ? $('#allowTel').parent().text().trim()
-      : '',
-    pdpa: $('#pdpa').is(':checked')
-      ? $('#pdpa').parent().text().trim()
-      : '',
-area: `ต.${$('#district').val()} ม.${$('#village').val()}`,
 
-                thai_cv_risk_score: riskData.riskPercentText.replace(/[^0-9.]/g, ''), 
-                risk_group: riskData.riskGroup, 
-                compare_ratio: riskData.compareRatio, 
-                suggestionText: suggestionText, 
-                userId: userProfile.userId, 
-                displayName: userProfile.displayName, 
-                pictureUrl: userProfile.pictureUrl, 
+    area: `ต.${$('#district').val()} ม.${$('#village').val()}`,
 
-            }; 
-            try { 
-                const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(dataToSend), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }); 
-                const result = await response.json(); 
-                if (result.status === 'success') { 
-                    $('#successModal').show(); 
-                } else { 
-                    throw new Error(result.message || 'Server returned an error.'); 
-                } 
-            } catch (error) { 
-                showAlert('การบันทึกล้มเหลว', `เกิดข้อผิดพลาด: ${error.message}`); 
-            } finally { 
-                saveButton.prop('disabled', false).text('บันทึกและดูผลประเมิน'); 
-            } 
-        }
+    thai_cv_risk_score: riskData.riskPercentText.replace(/[^0-9.]/g, ''),
+    risk_group: riskData.riskGroup,
+    compare_risk: riskData.compareRatio,
+    suggestion: suggestionText,
+
+    userId: userProfile.userId,
+    displayName: userProfile.displayName,
+    pictureUrl: userProfile.pictureUrl
+  };
+
+  console.log('payload:', dataToSend);
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(dataToSend),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+    });
+    const result = await response.json();
+    if (result.status === 'success') {
+      $('#successModal').show();
+    } else {
+      throw new Error(result.message || 'Server returned an error.');
+    }
+  } catch (error) {
+    showAlert('การบันทึกล้มเหลว', `เกิดข้อผิดพลาด: ${error.message}`);
+  } finally {
+    saveButton.prop('disabled', false).text('บันทึกและดูผลประเมิน');
+  }
+}
+
     </script>
 </body>
 </html>

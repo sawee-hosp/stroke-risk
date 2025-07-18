@@ -76,18 +76,16 @@
     </div>
   </div>
 
-<div class="form-group">
+<div class="form-group" style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 15px;">
   <label for="lineId">LINE ID:</label>
-  <div class="input-wrapper" style="display: flex; align-items: center;">
-    <input type="text" id="lineId" style="flex: 1;">
-    <button type="button" id="pasteLineIdBtn" style="margin-left: 8px; padding: 4px 8px; font-size: 0.75rem; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
-      วาง
-    </button>
-  </div>
-  <div style="font-size:12px; color:#666; margin-top:4px;">
+  <div class="input-wrapper" style="width: 100%; margin-top: 4px;">
+    <input type="text" id="lineId" style="width: 100%; padding: 8px; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;">
+  </div><br>
+  <small style="font-size: 12px; color: #666; margin-top: 4px;">
     ไปที่ ⚙️ &gt; โปรไฟล์ &gt; LINE ID &gt; คัดลอก
-  </div>
+  </small>
 </div>
+
 
   <div class="form-group checkbox-group">
     <label>
@@ -207,14 +205,7 @@
             populateVillageDropdown();
             toggleMeasurementFields();
         });
- $('#pasteLineIdBtn').on('click', async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      $('#lineId').val(text.trim());
-    } catch (err) {
-      showAlert('ไม่สามารถเข้าถึงคลิปบอร์ด', 'กรุณากด Ctrl+V เพื่อวางค่าด้วยตนเอง');
-    }
-  });
+
         async function initializeLiff() {
             try {
                 await liff.init({ liffId: LIFF_ID });
@@ -280,38 +271,37 @@ $('#village, #district').on('change', () => {
         }
         
         // UPDATED: handleUserRegistration now uses the new date formatting function
-        function handleUserRegistration(response) {
-            if (response.status === 'found' && response.data) {
-                const record = response.data;
-                const formattedTimestamp = formatThaiDateTime(record.timestamp);
-                $('#registration-status').html(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${formattedTimestamp}`).show();
-
-                if (record.name) $('#name').val(record.name);
-                if (record.telephone) $('#telephone').val(record.telephone);
-                if (record.hn) $('#hn').val(record.hn);
-                
-                if (record.district) $('#district').val(record.district);
-                if (record.village) {
-                    $('#village').val(record.village);
-                    $('#district').trigger('change'); 
-                }
-                    if (record.line_id) {
-      $('#lineId').val(record.line_id);
+ // ประกาศ global callback ให้ JSONP เรียกได้แน่นอน
+window.handleUserRegistration = function(response) {
+  if (response.status === 'found' && response.data) {
+    const record = response.data;
+    const ts = formatThaiDateTime(record.timestamp);
+    $('#registration-status').text(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${ts}`).show();
+    if (record.name)      $('#name').val(record.name);
+    if (record.telephone) $('#telephone').val(record.telephone);
+    if (record.hn)        $('#hn').val(record.hn);
+    if (record.district)  $('#district').val(record.district);
+    if (record.village) {
+      $('#village').val(record.village);
+      $('#district').trigger('change');
     }
-        if (record.help) {
+    if (record.line_id)   $('#lineId').val(record.line_id);
+    if (record.help) {
       record.help.split(', ').forEach(val => {
         $(`input[name="help"][value="${val}"]`).prop('checked', true);
       });
     }
+  }
+};
 
-            }
-        }
+// เรียก JSONP ตามเดิม
+function checkUserRegistration(userId) {
+  const url = `${GAS_URL}?userId=${encodeURIComponent(userId)}&callback=handleUserRegistration`;
+  const s = document.createElement('script');
+  s.src = url;
+  document.head.appendChild(s);
+}
 
-        function checkUserRegistration(userId) {
-            const s = document.createElement('script');
-            s.src = `${GAS_URL}?userId=${encodeURIComponent(userId)}&callback=handleUserRegistration`;
-            document.head.appendChild(s);
-        }
 
         function populateVillageDropdown() { for (let i = 1; i <= 19; i++) $('#village').append(`<option value="${i}">${i}</option>`); }
         

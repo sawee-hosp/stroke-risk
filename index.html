@@ -68,29 +68,70 @@
             <div class="form-group"> <label for="role">ประเมินให้ใคร:</label> <div class="input-wrapper"> <select id="role" class="form-control"> <option value="ประเมินตัวเอง" selected>ประเมินตัวเอง</option> <option value="ญาติ/ผู้ดูแลผู้ป่วย">ญาติ/ผู้ดูแลผู้ป่วย</option> <option value="จนท.สาธารณสุข">จนท.สาธารณสุข</option> <option value="อสม.สโตรก ประเมินให้คนอื่น">อสม.สโตรก ประเมินให้คนอื่น</option> </select> </div> </div>
             <div class="form-group"> <label for="name">ชื่อผู้รับการประเมิน:</label> <div class="input-wrapper"><input type="text" id="name" placeholder="อยากให้เราเรียกคุณว่าอะไรดีครับ"></div> </div>
             <div class="form-group"> <label>เป็นผู้รับบริการ รพ.สวี:</label> <div class="input-wrapper radio-group"> <label><input type="radio" name="isSawiPatient" value="1"> ใช่</label> <label><input type="radio" name="isSawiPatient" value="0" checked> ไม่ใช่</label> </div> </div>
-            <div id="patientForm">
-                <div class="form-group"> <label for="telephone">เบอร์โทรศัพท์:</label> <div class="input-wrapper"><input type="text" id="telephone" placeholder="ตัวเลข 10 หลัก ไม่ต้องใส่ขีด"></div> </div>
-                <div class="form-group">
-<div class="form-group">
-  <label for="lineId">LINE ID:</label>
-  <div class="input-wrapper">
-    <input type="text" id="lineId">
+<div id="patientForm">
+  <div class="form-group">
+    <label for="telephone">เบอร์โทรศัพท์:</label>
+    <div class="input-wrapper">
+      <input type="text" id="telephone" placeholder="ตัวเลข 10 หลัก ไม่ต้องใส่ขีด">
+    </div>
   </div>
-  <!-- คำเตือนเล็กๆ ด้านล่าง ไม่ใช่ placeholder -->
-  <small style="font-size:12px; color:#666; display:block; margin-top:4px;">
-    ไปที่ ⚙️ > โปรไฟล์ > LINE ID > คัดลอก
-  </small>
-</div>
-<div class="form-group checkbox-group">
-  <label>
-    <input type="checkbox" id="allowTel" checked> ยินยอมให้ข้อมูลส่วนบุคคลถูกแชร์กับ อสม./เจ้าหน้าที่สาธารณสุข ในพื้นที่เพื่อการดูแลสุขภาพ
-  </label>
+
+  <div class="form-group">
+    <label for="lineId">LINE ID:</label>
+    <div class="input-wrapper">
+      <input type="text" id="lineId">
+    </div>
+    <small style="font-size:12px; color:#666; display:block; margin-top:4px;">
+      ไปที่ ⚙️ > โปรไฟล์ > LINE ID > คัดลอก
+    </small>
+  </div>
+
+  <div class="form-group checkbox-group">
+    <label>
+      <input type="checkbox" id="allowTel" checked>
+      ยินยอมให้ข้อมูลส่วนบุคคลถูกแชร์กับ อสม./เจ้าหน้าที่สาธารณสุข ในพื้นที่เพื่อการดูแลสุขภาพ
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label for="hn">HN (เลข รพ.):</label>
+    <div class="input-wrapper">
+      <input type="text" id="hn" placeholder="เลขโรงพยาบาล 9 หลัก">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>หมู่ที่ / ตำบล:</label>
+    <div class="input-wrapper">
+      <select id="village" class="form-control" style="margin-right: 5px;">
+        <option value="">หมู่ที่</option>
+        <!-- หมายเลขหมู่เพิ่มเติม -->
+      </select>
+      <select id="district" class="form-control">
+        <option value="">ตำบล</option>
+        <option>ท่าหิน</option>
+        <option>ด่านสวี</option>
+        <option>เขาทะลุ</option>
+        <option>เขาค่าย</option>
+        <option>ปากแพรก</option>
+        <option>สวี</option>
+        <option>นาสัก</option>
+        <option>ทุ่งระยะ</option>
+        <option>วิสัยใต้</option>
+        <option>ครน</option>
+        <option>นาโพธิ์</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="pcu">รพ.สต.:</label>
+    <div class="input-wrapper">
+      <input type="text" id="pcu" readonly>
+    </div>
+  </div>
 </div>
 
-                <div class="form-group"> <label for="hn">HN (เลข รพ.):</label> <div class="input-wrapper"><input type="text" id="hn" placeholder="เลขโรงพยาบาล 9 หลัก"></div> </div>
-                <div class="form-group"> <label>หมู่ที่ / ตำบล:</label> <div class="input-wrapper"> <select id="village" class="form-control" style="margin-right: 5px;"><option value="">หมู่ที่</option></select> <select id="district" class="form-control"> <option value="">ตำบล</option> <option>ท่าหิน</option><option>ด่านสวี</option><option>เขาทะลุ</option> <option>เขาค่าย</option><option>ปากแพรก</option><option>สวี</option> <option>นาสัก</option><option>ทุ่งระยะ</option><option>วิสัยใต้</option> <option>ครน</option><option>นาโพธิ์</option> </select> </div> </div>
-                <div class="form-group"> <label for="pcu">รพ.สต.:</label> <div class="input-wrapper"><input type="text" id="pcu" readonly></div> </div>
-            </div>
             <hr>
             <div class="form-group checkbox-group">
                 <label>โรคประจำตัว:</label>

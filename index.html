@@ -20,25 +20,28 @@
         }
         #loading-text { font-size: 2rem; font-weight: bold; margin-bottom: 20px; }
         #loading-subtext { 
-            font-size: 3.5rem; /* ปรับขนาดให้พอดีหน้าจอมือถือ */
+            font-size: 3.5rem; 
             font-weight: 800; color: #ffc107; min-height: 100px; 
             line-height: 1.2; text-shadow: 2px 2px 10px rgba(255,193,7,0.5); 
             opacity: 1; transition: opacity 0.5s ease-in-out; 
         }
         #loading-icon { 
-            font-size: 5rem; color: #ffc107; margin-bottom: 30px; 
-            animation: pulse 1s infinite; opacity: 1; transition: opacity 0.5s ease-in-out; 
+            font-size: 6rem; /* ขยายไอคอนใหญ่ขึ้น */
+            color: #ffc107; 
+            margin-bottom: 30px; 
+            /* เปลี่ยน Animation เป็นหมุน (Spin) */
+            animation: spin 2s linear infinite; 
+            opacity: 1; transition: opacity 0.5s ease-in-out; 
         }
-        @keyframes pulse { 
-            0% { transform: scale(1); } 
-            50% { transform: scale(1.2); } 
-            100% { transform: scale(1); } 
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
         }
 
         /* --- Styles: Main Application (Large Fonts for Elderly) --- */
         body { 
             font-family: "Noto Sans Thai", sans-serif; 
-            font-size: 22px; /* เพิ่มขนาด Base Font */
+            font-size: 22px; 
             background: #f5f5f5; padding: 10px; margin: 0; 
             line-height: 1.6;
         }
@@ -48,7 +51,7 @@
         }
         
         h1 { 
-            font-size: 32px; /* หัวข้อใหญ่ */
+            font-size: 32px; 
             font-weight: 800; text-align: center; margin-bottom: 25px; 
             color: #003366; line-height: 1.3;
         }
@@ -77,15 +80,15 @@
             padding: 5px 0;
         }
         input[type="radio"], input[type="checkbox"] { 
-            transform: scale(2); /* ขยายขนาดปุ่มกด */
+            transform: scale(2); 
             margin-right: 15px; margin-left: 5px;
         }
 
         /* Highlight Box for Sawi Patient */
         #patientForm { 
             display: none; 
-            border: 3px solid #f0ad4e; /* ขอบสีส้มอ่อน */
-            background-color: #fff9c4; /* พื้นหลังสีเหลืองอ่อน */
+            border: 3px solid #f0ad4e; 
+            background-color: #fff9c4; 
             padding: 20px; margin-top: 15px; margin-bottom: 15px;
             border-radius: 15px; 
         }
@@ -103,6 +106,23 @@
 
         #result-container { margin-top: 30px; padding: 20px; border-top: 2px solid #eee; display: none; }
         #result-text { font-size: 22px; }
+        
+        /* New Style for Suggestion Box (Pink Background) */
+        .suggestion-box {
+            background-color: #FFEEEE; /* สีชมพูอ่อน */
+            border: 2px solid #FFC0CB; /* ขอบสีชมพูเข้มขึ้นนิดหน่อย */
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 15px;
+        }
+        .suggestion-box ul {
+            padding-left: 25px;
+        }
+        .suggestion-box li {
+            font-size: 26px; /* ขยายตัวหนังสือคำแนะนำ */
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
         
         .progress-bar-container { height: 40px; border-radius: 20px; background-color: #ddd; margin: 25px 0; }
         .progress-bar { font-size: 20px; line-height: 40px; border-radius: 20px; }
@@ -134,7 +154,7 @@
             <span id="info-icon" class="info-icon" title="ข้อจำกัดความรับผิดชอบ">ℹ️</span>
         </h1>
         
-        <div id="registration-status" style="font-size: 20px; color: #198754; font-weight: bold; text-align: center; margin-bottom: 15px; display: none;"></div>
+        <div id="registration-status" style="font-size: 22px; color: #198754; font-weight: bold; text-align: center; margin-bottom: 15px; display: none;"></div>
 
         <form id="mainForm" onsubmit="return false;">
             <div class="form-group"> <label for="lineName">ชื่อ Line:</label> <input type="text" id="lineName" readonly> </div>
@@ -318,13 +338,13 @@
             
             loadingInterval = setInterval(() => {
                 if(sub) sub.style.opacity = 0;
-                if(icon) icon.style.opacity = 0;
+                // if(icon) icon.style.opacity = 0; // ไม่ต้องซ่อน icon ตอนเปลี่ยนคำ
                 
                 setTimeout(() => {
                     i = (i + 1) % msgs.length;
                     if(sub) sub.textContent = msgs[i];
                     if(sub) sub.style.opacity = 1;
-                    if(icon) icon.style.opacity = 1;
+                    // if(icon) icon.style.opacity = 1;
                 }, 500);
             }, 2500);
         }
@@ -356,11 +376,10 @@
                     userProfile = await liff.getProfile();
                     $('#lineName').val(userProfile.displayName);
                     checkUserRegistration(userProfile.userId); 
-                    // Note: stopLoadingAnimation is called inside checkUserRegistration or fallback
                 }
             } catch (e) { 
                 console.error('LIFF Init Error:', e); 
-                stopLoadingAnimation(); // Stop if error
+                stopLoadingAnimation(); 
                 showAlert('LIFF Error', 'ไม่สามารถเริ่มต้นแอปพลิเคชันได้'); 
             }
         }
@@ -368,13 +387,11 @@
         function setupEventListeners() {
             $('.calc-input').on('input change', (event) => {
                 if (event.target.name === 'useCholesterol') return;
-                // If checking stroke, don't run calc immediately until date logic is settled (optional), keeping as is
                 runCalculation();
             });
             
             $('input[name="useCholesterol"]').on('change', toggleMeasurementFields);
             
-            // Is Sawi Patient Toggle Logic
             $('input[name="isSawiPatient"]').on('change', () => {
                 const isPatient = $('input[name="isSawiPatient"]:checked').val() === '1';
                 if(isPatient) {
@@ -384,13 +401,12 @@
                 }
             });
 
-            // Stroke Date Toggle Logic
             $('#chk-stroke').on('change', (e) => {
                 if (e.target.checked) {
                     $('#stroke-date-wrapper').slideDown();
                 } else {
                     $('#stroke-date-wrapper').slideUp();
-                    $('#stroke-date').val(''); // Clear date if unchecked
+                    $('#stroke-date').val(''); 
                 }
                 runCalculation();
             });
@@ -445,12 +461,14 @@
         
         // JSONP Callback
         window.handleUserRegistration = function(response) {
-            stopLoadingAnimation(); // Stop loading when data returns
+            stopLoadingAnimation(); 
             
             if (response.status === 'found' && response.data) {
                 const record = response.data;
                 const ts = formatThaiDateTime(record.timestamp);
-                $('#registration-status').text(`✔️ คุณเคยลงทะเบียนแล้วเมื่อ ${ts}`).show();
+                // เปลี่ยนข้อความแจ้งเตือนที่นี่
+                $('#registration-status').text(`✔️ คุณเคยประเมินความเสี่ยงไปแล้ว เมื่อ ${ts}`).show();
+                
                 if (record.name)      $('#name').val(record.name);
                 if (record.telephone) $('#telephone').val(record.telephone);
                 if (record.hn)        $('#hn').val(record.hn);
@@ -469,13 +487,12 @@
         };
 
         function checkUserRegistration(userId) {
-            // Set fallback timeout in case JSONP fails
             setTimeout(() => stopLoadingAnimation(), 8000); 
 
             const url = `${GAS_URL}?userId=${encodeURIComponent(userId)}&callback=handleUserRegistration`;
             const s = document.createElement('script');
             s.src = url;
-            s.onerror = () => stopLoadingAnimation(); // Stop if script fails
+            s.onerror = () => stopLoadingAnimation(); 
             document.head.appendChild(s);
         }
 
@@ -600,8 +617,8 @@
                 <p style="font-size: 1.3rem; font-weight: 500;">ความเสี่ยง 10 ปี: <strong>${riskData.riskPercentText} (${riskData.riskGroup})</strong></p>
                 <p style="font-size: 1.1rem;">${compareText}</p>
                 <hr>
-                <p style="text-align:left; font-weight:bold;">ข้อแนะนำเบื้องต้น</p>
-                <div style="font-size: 1.1rem;">${suggestionsHtml}</div>
+                <p style="text-align:left; font-weight:bold; font-size:1.2rem;">ข้อแนะนำเบื้องต้น</p>
+                <div class="suggestion-box">${suggestionsHtml}</div>
             `; 
             $('#result-text').html(resultHtml).parent().show(); 
         }
@@ -610,7 +627,6 @@
             if (!userProfile) { showAlert('เกิดข้อผิดพลาด', 'ยังไม่สามารถดึงข้อมูลผู้ใช้ LINE ได้'); return; }
             if (!validateCalculationInputs()) { showAlert('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลการประเมินความเสี่ยงให้ครบถ้วน'); return; }
 
-            // Validate Phone Number for Sawee Patient
             const isSawiPatient = $('input[name="isSawiPatient"]:checked').val() === '1';
             const phone = $('#telephone').val().trim();
             if (isSawiPatient) {
@@ -628,11 +644,9 @@
             const { suggestions, finalAdvice } = generateSuggestionText(inputs);
             const suggestionText = suggestions.join('\n') + '\n' + finalAdvice.replace(/<[^>]*>?/gm, '');
 
-            // Construct UD String with Date Logic
             let udList = $('input[name="ud"]:checked').map((_, el) => {
                 let val = $(el).val();
                 if (val === 'โรคหลอดเลือดสมอง') {
-                    // Check date input
                     let dateVal = $('#stroke-date').val();
                     let dateStr = dateVal ? ` (${dateToThaiStr(dateVal)})` : ' (ไม่ระบุวันที่)';
                     return `สโตรก${dateStr}`;
@@ -644,20 +658,16 @@
                 name: $('#name').val().trim() || userProfile.displayName,
                 role: $('#role').val(),
                 isSawiPatient: isSawiPatient ? '1' : '0',
-
                 telephone: phone,
                 line_id: $('#lineId').val().trim(),
-
                 allow_tel: $('#allowTel').is(':checked') ? $('#allowTel').parent().text().trim() : '',
                 pdpa: $('#pdpa').is(':checked') ? $('#pdpa').parent().text().trim() : '',
-
                 hn: $('#hn').val().trim(),
                 district: $('#district').val(),
                 village: $('#village').val(),
                 pcu: $('#pcu').val(),
                 ud: udList,
                 help: $('input[name="help"]:checked').map((_,el)=>$(el).val()).get().join(', '),
-
                 age: inputs.age,
                 gender: inputs.sex,
                 smoke: inputs.smoke,
@@ -666,20 +676,15 @@
                 cholesterol: inputs.tc,
                 waist: inputs.wc_inch,
                 height: inputs.ht,
-
                 area: `ต.${$('#district').val()} ม.${$('#village').val()}`,
-
                 thai_cv_risk_score: riskData.riskPercentText.replace(/[^0-9.]/g, ''),
                 risk_group: riskData.riskGroup,
                 compare_risk: riskData.compareRatio,
                 suggestion: suggestionText,
-
                 userId: userProfile.userId,
                 displayName: userProfile.displayName,
                 pictureUrl: userProfile.pictureUrl
             };
-
-            console.log('payload:', dataToSend);
 
             try {
                 const response = await fetch(GAS_URL, {

@@ -19,29 +19,23 @@
             line-height: 1.5;
             min-height: 100vh;
             
-            /* เทคนิคไล่สี 2 ชั้น: 
-               1. แนวตั้ง (Layer บน): โปร่งใส -> ขาว (เริ่มขาวที่ 400px) 
-               2. แนวนอน (Layer ล่าง): ฟ้า -> เทา -> ชมพู 
-            */
-            background: 
-                linear-gradient(180deg, rgba(255,255,255,0) 0%, #ffffff 400px),
-                linear-gradient(90deg, #6ffcf3 0%, #dce0e0 50%, #fa93a3 100%);
+            /* พื้นหลังสีแดงไล่ไปขาว ตามโจทย์ #ff3654 */
+            background: linear-gradient(180deg, #ff3654 0%, #ffffff 400px);
             
             background-repeat: no-repeat;
-            background-attachment: fixed; /* ให้สีพื้นหลังเกาะติดจอ */
+            background-attachment: fixed; 
         }
         .container { 
             max-width: 100%; 
-            padding: 15px; 
+            padding: 10px 15px; /* ลด Padding บนล่าง */
             margin: 0 auto;
-            padding-bottom: 40px; 
         }
 
         /* --- Header --- */
         .header-group { 
             display: flex; align-items: center; justify-content: center; 
-            margin-bottom: 10px; /* ลดระยะห่างจาก Card ตามคำขอ */
-            padding-top: 20px;
+            margin-bottom: 15px; /* ลดระยะห่าง */
+            padding-top: 10px;   /* ลดระยะห่าง */
         }
         h1 { 
             color: #ffffff; 
@@ -64,7 +58,7 @@
             border-radius: 20px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             padding: 25px; 
-            margin-bottom: 40px; 
+            margin-bottom: 15px; /* ลดระยะห่างด้านล่าง */
             border: 1px solid #f0f0f0;
         }
 
@@ -73,8 +67,8 @@
             text-align: center;
             color: #666;
             font-size: 14px;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            margin-top: 5px; /* ลดระยะห่าง */
+            margin-bottom: 15px;
         }
 
         /* --- Forms --- */
@@ -88,12 +82,12 @@
             width: 100%; padding: 12px; font-size: 22px; 
             border-radius: 12px; border: 1px solid #ccc; background: #fdfdfd;
         }
-        /* เปลี่ยนสี Glow ตอน Focus ให้เข้ากับธีมชมพูอ่อนๆ */
-        input:focus, select:focus { border-color: #fa93a3; outline: none; background: #fff; box-shadow: 0 0 0 0.25rem rgba(250, 147, 163, 0.25); }
+        /* เปลี่ยนสี Glow เป็นแดงอ่อน */
+        input:focus, select:focus { border-color: #ff3654; outline: none; background: #fff; box-shadow: 0 0 0 0.25rem rgba(255, 54, 84, 0.25); }
 
         .inline-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .radio-label { font-weight: normal; display: flex; align-items: center; cursor: pointer; font-size: 20px; }
-        input[type="radio"], input[type="checkbox"] { transform: scale(1.6); margin-right: 10px; accent-color: #fa93a3; }
+        input[type="radio"], input[type="checkbox"] { transform: scale(1.6); margin-right: 10px; accent-color: #ff3654; }
 
         #patientForm { background-color: #FFFDE7; border: 2px solid #FFC107; padding: 20px; border-radius: 15px; margin-top: 15px; }
 
@@ -109,7 +103,7 @@
         .explanation-box { text-align: left; background: #fff; padding: 20px; border-radius: 15px; margin-top: 20px; font-size: 20px; line-height: 1.6; border: 1px solid #dee2e6; color: #333; white-space: pre-wrap; }
 
         /* --- Buttons --- */
-        .action-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+        .action-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
         .btn-action { 
             width: 100%; padding: 15px; font-size: 22px; font-weight: bold;
             color: white; border: none; border-radius: 50px; 
@@ -235,16 +229,6 @@
                         </label>
                     </div>
 
-                    <!-- PDPA Section -->
-                    <div class="form-row" style="border:none; border-top: 1px dashed #bbb; padding-top: 15px; margin-top: 10px;">
-                        <label class="radio-label" style="align-items: flex-start; background-color: #e8f5e9; padding: 10px; border-radius: 10px; border: 1px solid #c8e6c9;">
-                            <input type="checkbox" id="pdpa" checked style="margin-top: 5px;"> 
-                            <span style="font-size: 18px; color: #2e7d32; font-weight: bold;">
-                                ยินยอมให้ รพ.สวี นำข้อมูลไปประมวลผลเพื่อเพิ่มความตระหนักรู้และการเข้าถึงการรักษาโรคหลอดเลือดสมอง
-                            </span>
-                        </label>
-                    </div>
-
                     <div class="form-row" style="border:none; border-top: 1px dashed #bbb; padding-top: 15px; margin-top: 10px;">
                         <label>สมมติจู่ๆ ปากเบี้ยว แขนไม่มีแรง คุณจะทำอย่างไรเป็นอย่างแรก?</label>
                         <div style="display:flex; flex-direction:column; gap:8px;">
@@ -355,6 +339,16 @@
                     <hr style="border-top: 2px dashed #ccc; margin: 25px 0;">
                     <div id="full-advice-display"></div>
                 </div>
+            </div>
+
+            <!-- PDPA Section moved here -->
+            <div style="margin-top: 25px; margin-bottom: 10px;">
+                <label class="radio-label" style="align-items: flex-start; background-color: #e8f5e9; padding: 15px; border-radius: 12px; border: 1px solid #c8e6c9; width: 100%;">
+                    <input type="checkbox" id="pdpa" checked style="margin-top: 5px;"> 
+                    <span style="font-size: 18px; color: #2e7d32; font-weight: bold;">
+                        ยินยอมให้ รพ.สวี นำข้อมูลไปประมวลผลเพื่อเพิ่มความตระหนักรู้และการเข้าถึงการรักษาโรคหลอดเลือดสมอง
+                    </span>
+                </label>
             </div>
 
             <div class="action-buttons">
@@ -537,7 +531,10 @@
                     await sendFlex(globalRiskData, payload.name, finalSuggestion);
                     
                     if (actionType === 'history') {
-                        liff.openWindow({ url: "https://liff.line.me/2005789397-RLAGXrBJ", external: false });
+                        liff.openWindow({
+                            url: "https://liff.line.me/2005789397-RLAGXrBJ",
+                            external: false
+                        });
                     } else {
                         liff.closeWindow();
                     }

@@ -37,7 +37,7 @@
         h1 { 
             color: #ffffff; /* สีขาว */
             font-weight: 900; 
-            font-size: 28px; 
+            font-size: 24px; 
             margin: 0; 
             /* เงาเข้มเพื่อให้ตัดกับพื้นแดงชัดเจน */
             text-shadow: 2px 2px 4px rgba(0,0,0,0.4); 
@@ -412,7 +412,7 @@
             if(ins.sbp >= 120) sug.push(`💓 ความดันตัวบนเริ่มสูง (${ins.sbp} mmHg): ควรลดอาหารเค็ม/ผงปรุงรส ออกกำลังกายสม่ำเสมอ (เกณฑ์ปกติไม่ควรเกิน 120)`);
             
             // คอเลสเตอรอล (ปรับเกณฑ์ 200 ตามขอ)
-            if(ins.tc > 200) sug.push(`🍳 ไขมันในเลือดสูง (${ins.tc} mg/dL): หลีกเลี่ยงของทอด กะทิ เครื่องในสัตว์ (เกณฑ์ปกติไม่ควรเกิน 200)`);
+            if(ins.tc >= 200) sug.push(`🍳 ไขมันในเลือดสูง (${ins.tc} mg/dL): หลีกเลี่ยงของทอด กะทิ เครื่องในสัตว์ (เกณฑ์ปกติไม่ควรเกิน 200)`);
             
             // รอบเอว
             if(ins.wc_inch > 36) sug.push(`🏋️‍♀️ รอบเอวเกินเกณฑ์ (${ins.wc_inch} นิ้ว): ควรลดหวาน/มัน/เค็ม เพิ่มการเดินหรือออกกำลังกาย (เกณฑ์ปกติไม่ควรเกิน 36 นิ้ว)`);
@@ -540,13 +540,13 @@
             const safeRiskText = data.riskPercentText ? String(data.riskPercentText) : "0";
             const safeRiskGroup = data.riskGroup ? String(data.riskGroup) : "-";
 
-            // Standard Bubble Size "mega" (safe than giga), Font sizes standard (4xl max)
+            // Standard Bubble Size "kilo" (safe and standard width), Font sizes standard
             const msg = {
                 type: "flex",
                 altText: "ผลประเมินความเสี่ยงสโตรก",
                 contents: {
                     type: "bubble",
-                    size: "mega", 
+                    size: "kilo", 
                     body: {
                         type: "box", layout: "vertical",
                         contents: [
@@ -554,10 +554,10 @@
                             { type: "text", text: `คุณ ${safeName}`, weight: "bold", size: "xxl", align: "center", margin: "md", wrap: true }, 
                             { type: "text", text: "โอกาสเป็นสโตรกใน 10 ปี", size: "md", color: "#aaaaaa", align: "center", margin: "md" }, 
                             { type: "text", text: `${safeRiskText}%`, size: "4xl", weight: "bold", color: safeColor, align: "center", margin: "sm" }, 
-                            { type: "text", text: safeRiskGroup, size: "xxl", weight: "bold", color: "#555555", align: "center", margin: "sm", wrap: true }, 
+                            { type: "text", text: safeRiskGroup, size: "xl", weight: "bold", color: "#555555", align: "center", margin: "sm", wrap: true }, 
                             { type: "separator", margin: "xl" },
                             { type: "text", text: "คำแนะนำและการปฏิบัติตัว:", weight: "bold", size: "lg", color: "#333333", margin: "lg" }, 
-                            { type: "text", text: safeSuggestion, wrap: true, size: "lg", color: "#444444", margin: "md", lineHeight: "1.5em" } 
+                            { type: "text", text: safeSuggestion, wrap: true, size: "lg", color: "#444444", margin: "md" } 
                         ]
                     }
                 }

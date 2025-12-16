@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         /* --- Base Styles --- */
@@ -22,97 +23,102 @@
             padding: 15px; margin: 0 auto;
         }
 
-        /* --- UI Elements --- */
-        .header-group { text-align: center; margin-bottom: 20px; position: relative; }
-        h1 { color: #003366; font-weight: 800; display: inline-block; font-size: 26px; margin: 0; }
-        
+        /* --- Header & Modal --- */
+        .header-group { 
+            display: flex; align-items: center; justify-content: center; 
+            margin-bottom: 20px; position: relative; 
+        }
+        h1 { 
+            color: #003366; font-weight: 800; font-size: 26px; margin: 0; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
         #btn-disclaimer {
-            font-size: 14px; padding: 2px 8px; border-radius: 10px;
+            font-size: 14px; padding: 4px 10px; border-radius: 15px;
             background: #17a2b8; color: white; border: none;
-            vertical-align: middle; margin-left: 10px; cursor: pointer;
+            margin-left: 10px; cursor: pointer; flex-shrink: 0;
         }
 
-        .form-row { 
-            margin-bottom: 20px; 
-            border-bottom: 1px solid #eee; 
-            padding-bottom: 15px;
-        }
+        /* --- Forms --- */
+        .form-row { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .form-row:last-child { border-bottom: none; }
         
-        label { font-weight: 700; display: block; margin-bottom: 8px; color: #003366; }
+        label { font-weight: 700; display: block; margin-bottom: 8px; color: #003366; font-size: 20px; }
         small { font-weight: 400; font-size: 16px; color: #666; display: block; margin-top: 5px; }
 
+        /* Input ใหญ่ขึ้น */
         input[type="number"], input[type="text"], input[type="date"], select { 
-            width: 100%; padding: 10px; font-size: 18px; 
+            width: 100%; padding: 12px; font-size: 22px; /* ใหญ่ตามขอ */
             border-radius: 8px; border: 1px solid #ccc; 
             background: #f9f9f9;
         }
-        input:read-only { background-color: #e9ecef; cursor: not-allowed; }
         input:focus, select:focus { border-color: #007BFF; outline: none; background: #fff; }
 
         /* Radio/Checkbox */
-        .inline-group { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .radio-label { font-weight: normal; display: flex; align-items: center; cursor: pointer; }
-        input[type="radio"], input[type="checkbox"] { transform: scale(1.5); margin-right: 10px; }
+        .inline-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .radio-label { font-weight: normal; display: flex; align-items: center; cursor: pointer; font-size: 20px; }
+        input[type="radio"], input[type="checkbox"] { transform: scale(1.6); margin-right: 10px; }
 
-        .sawi-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-        .sawi-label { margin-bottom: 0; margin-right: 15px; }
-
+        /* Info Box */
         #patientForm { 
             background-color: #FFFDE7; border: 2px solid #FFC107; 
-            padding: 15px; border-radius: 12px; margin-top: 10px;
-        }
-
-        #disclaimer-box {
-            display: none; background: #f8f9fa; padding: 15px;
-            border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;
-            font-size: 16px; color: #555;
+            padding: 20px; border-radius: 12px; margin-top: 15px;
         }
 
         /* Result Section */
         #result-container { 
-            margin-top: 20px; padding: 20px; 
-            background: #E8F8F5; border-radius: 15px;
-            border: 2px solid #28a745; display: none; text-align: center;
+            margin-top: 25px; padding: 20px; 
+            background: #fff; border-radius: 15px;
+            border: 2px solid #ddd; display: none; text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
-        .risk-percent { font-size: 3.5rem; font-weight: 900; line-height: 1; margin: 10px 0; color: #28a745; }
-        .risk-desc { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 15px; }
-        .progress-bar-bg { width: 100%; height: 20px; background: #ddd; border-radius: 10px; overflow: hidden; margin: 15px 0; }
-        .progress-bar-fill { height: 100%; background: #28a745; width: 0%; transition: width 0.5s ease; }
-        .explanation-box { text-align: left; background: #fff; padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 18px; border: 1px solid #ccc; }
+        .risk-percent { font-size: 4rem; font-weight: 900; line-height: 1; margin: 15px 0; }
+        .risk-desc { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; }
+        .progress-bar-bg { width: 100%; height: 25px; background: #e9ecef; border-radius: 15px; overflow: hidden; margin: 20px 0; }
+        .progress-bar-fill { height: 100%; width: 0%; transition: width 0.8s ease; }
+        .explanation-box { text-align: left; background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 18px; line-height: 1.6; border: 1px solid #dee2e6; }
 
         button#saveButton { 
-            width: 100%; padding: 15px; font-size: 20px; font-weight: bold;
+            width: 100%; padding: 15px; font-size: 22px; font-weight: bold;
             color: white; background-color: #007BFF; border: none; border-radius: 50px; 
-            margin-top: 20px; box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+            margin-top: 30px; box-shadow: 0 4px 10px rgba(0,123,255,0.3);
         }
-        button:active { transform: scale(0.98); }
 
         .hidden { display: none; }
+        .status-box { padding: 10px; border-radius: 8px; text-align: center; font-size: 18px; margin-bottom: 15px; font-weight: bold; line-height: 1.4; }
+        .found { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+        .warn { background: #fff3cd; color: #856404; border: 1px solid #ffecb5; }
+        
         #loading { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(255,255,255,0.8); display: flex; 
+            background: rgba(255,255,255,0.9); display: flex; 
             justify-content: center; align-items: center; z-index: 9999; 
         }
-        .spinner-border { width: 3rem; height: 3rem; color: #007BFF; }
-        .status-box { padding: 8px; border-radius: 8px; text-align: center; font-size: 16px; margin-bottom: 10px; font-weight: bold;}
-        .found { background: #d1e7dd; color: #0f5132; }
-        .warn { background: #fff3cd; color: #856404; }
     </style>
 </head>
 <body>
 
-    <div id="loading"><div class="spinner-border"></div></div>
+    <div id="loading"><div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div></div>
+
+    <div class="modal fade" id="disclaimerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">เกี่ยวกับแบบประเมิน</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <b>Thai CV Risk Score</b> คือ แบบประเมินความเสี่ยงต่อโรคหัวใจและหลอดเลือด (รวมถึงสโตรก) ใน 10 ปีข้างหน้า<br><br>
+                    พัฒนาโดยคณะแพทยศาสตร์โรงพยาบาลรามาธิบดี ใช้ข้อมูลปัจจัยเสี่ยงต่าง ๆ เช่น อายุ เพศ ความดัน เบาหวาน มาคำนวณทางสถิติ<br><br>
+                    <i>*ผลที่ได้ใช้เพื่อการคัดกรองเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยจากแพทย์</i>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="header-group">
             <h1>ประเมินความเสี่ยงสโตรก</h1>
-            <button id="btn-disclaimer" type="button">อ่านก่อน</button>
-        </div>
-
-        <div id="disclaimer-box">
-            <b>ข้อจำกัดความรับผิดชอบ:</b><br>
-            แบบประเมินนี้ใช้เพื่อคัดกรองความเสี่ยงเบื้องต้นด้วยโมเดลทางสถิติ (Thai CV Risk Score) เท่านั้น ไม่สามารถใช้แทนการวินิจฉัยทางการแพทย์ได้
+            <button id="btn-disclaimer" type="button" data-bs-toggle="modal" data-bs-target="#disclaimerModal">อ่านก่อน</button>
         </div>
         
         <div id="history-alert"></div>
@@ -136,8 +142,8 @@
                 <input type="text" id="name" placeholder="ชื่อเล่น หรือ ชื่อจริง">
             </div>
 
-            <div class="form-row sawi-row">
-                <label class="sawi-label">เป็นผู้รับบริการ รพ.สวี:</label>
+            <div class="form-row">
+                <label>เป็นผู้รับบริการ รพ.สวี:</label>
                 <div class="inline-group">
                     <label class="radio-label"><input type="radio" name="isSawiPatient" value="1" checked> ใช่</label>
                     <label class="radio-label"><input type="radio" name="isSawiPatient" value="0"> ไม่ใช่</label>
@@ -146,7 +152,7 @@
 
             <div id="patientForm">
                 <div class="form-row" style="border:none;">
-                    <label>เบอร์โทรศัพท์ (บังคับ):</label>
+                    <label>เบอร์โทรศัพท์ (จำเป็น*):</label>
                     <input type="text" id="telephone" maxlength="10" inputmode="numeric" placeholder="เบอร์มือถือ 10 หลัก">
                 </div>
                 <div class="form-row" style="border:none;">
@@ -178,17 +184,17 @@
 
                 <div class="form-row" style="border:none;">
                     <label>รพ.สต. ที่รับผิดชอบ:</label>
-                    <input type="text" id="pcu" readonly placeholder="จะแสดงอัตโนมัติเมื่อเลือกที่อยู่">
+                    <input type="text" id="pcu" readonly style="background-color: #e9ecef; color: #555;">
                 </div>
 
                 <div class="form-row" style="border:none;">
                     <label class="radio-label" style="align-items: flex-start;">
                         <input type="checkbox" id="allowTel" checked style="margin-top: 5px;"> 
-                        <span>ยินยอมให้ข้อมูลเบอร์โทร/ที่อยู่ แก่ อสม.และ จนท.รพ.สวี</span>
+                        <span style="font-size: 18px;">ยินยอมให้ข้อมูลเบอร์โทร/ที่อยู่ แก่ อสม.และ จนท.รพ.สวี</span>
                     </label>
                 </div>
 
-                <div class="form-row" style="border:none; border-top: 1px dashed #ccc; padding-top: 15px;">
+                <div class="form-row" style="border:none; border-top: 1px dashed #bbb; padding-top: 15px; margin-top: 10px;">
                     <label>สมมติจู่ๆ ปากเบี้ยว แขนไม่มีแรง คุณจะทำอย่างไรเป็นอย่างแรก?</label>
                     <div style="display:flex; flex-direction:column; gap:8px;">
                         <label class="radio-label"><input type="radio" name="decision" value="รอดูอาการ"> รอดูอาการ</label>
@@ -209,13 +215,13 @@
                 </div>
             </div>
 
-            <h3 style="margin-top:30px; border-bottom: 2px solid #003366;">ข้อมูลสุขภาพ</h3>
+            <h3 style="margin-top:30px; border-bottom: 3px solid #003366; padding-bottom: 5px;">ข้อมูลสุขภาพ</h3>
             
             <div class="form-row">
                 <label>โรคประจำตัว:</label>
                 <div style="display:flex; flex-direction:column; gap:10px;">
                     <label class="radio-label"><input type="checkbox" class="calc-trigger" name="ud" value="โรคหลอดเลือดสมอง" id="chk-stroke"> เคยเป็นสโตรก</label>
-                    <div id="stroke-date-wrapper" class="hidden" style="margin-left:30px;">
+                    <div id="stroke-date-wrapper" class="hidden" style="margin-left:35px;">
                         <label>วันที่เป็น:</label><input type="date" id="stroke-date">
                     </div>
                     <label class="radio-label"><input type="checkbox" class="calc-trigger" name="ud" value="ความดันสูง"> ความดันสูง</label>
@@ -254,21 +260,20 @@
             </div>
 
             <div class="form-row">
-                <label>ความดัน (ค่าสูงตัวเดียว):</label>
-                <input type="number" id="sbp" class="calc-trigger" inputmode="numeric" placeholder="ตัวเลขเท่านั้น เช่น 135">
+                <label>ความดันตัวบน (SBP):</label>
+                <input type="number" id="sbp" class="calc-trigger" inputmode="numeric" placeholder="เช่น 135">
             </div>
 
             <div class="form-row">
-                <label>มีผลเลือดไขมัน (คอเลสเตอรอล):</label>
-                <small>(ดูจากสมุดไขมันหรือหมอพร้อม)</small>
-                <div class="inline-group" style="margin-top:5px;">
+                <label>มีผลไขมัน (TC) ล่าสุด:</label>
+                <div class="inline-group">
                     <label class="radio-label"><input type="radio" class="calc-trigger" name="useCholesterol" value="1"> มี</label>
                     <label class="radio-label"><input type="radio" class="calc-trigger" name="useCholesterol" value="0" checked> ไม่มี</label>
                 </div>
             </div>
 
             <div id="tc_group" class="form-row hidden">
-                <label>ค่าคอเลสเตอรอลรวม:</label>
+                <label>ค่าคอเลสเตอรอลรวม (TC):</label>
                 <input type="number" id="tc" class="calc-trigger" inputmode="numeric">
             </div>
 
@@ -286,7 +291,7 @@
         </form>
 
         <div id="result-container">
-            <h3>ผลการประเมินเบื้องต้น</h3>
+            <h3>ผลการประเมิน</h3>
             <div class="risk-percent" id="rt-percent">0%</div>
             <div class="risk-desc" id="rt-desc">-</div>
             <div class="progress-bar-bg">
@@ -296,16 +301,16 @@
         </div>
 
         <button id="saveButton" onclick="saveAndSend()">บันทึกและดูผลประเมิน</button>
-        <div style="text-align:center; margin-top:30px; color:#888;">จัดทำโดย "สวีรู้ทันสโตรก" รพ.สวี จ.ชุมพร</div>
+        <div style="text-align:center; margin-top:30px; color:#888; font-size: 14px;">จัดทำโดย "สวีรู้ทันสโตรก" รพ.สวี จ.ชุมพร</div>
     </div>
 
     <script>
-        // ใส่ URL ที่ได้จากการ Deploy ใหม่ที่นี่
-        const LIFF_ID = '2005789397-nebQ8oJy';
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec'; 
+        const LIFF_ID = '2005789397-nebQ8oJy'; // ใส่ LIFF ID ของคุณ
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec';
         
         let userProfile = null;
         let globalRiskData = null;
+        let historyData = null;
 
         $(document).ready(() => {
             $('#loading').fadeOut(300);
@@ -314,11 +319,20 @@
             toggleMeasurementFields();
             
             // Listeners
-            $('#btn-disclaimer').click(function() { $('#disclaimer-box').slideToggle(); });
             $('input[name="isSawiPatient"]').change(function() {
                 $(this).val() === '1' ? $('#patientForm').slideDown() : $('#patientForm').slideUp();
             });
             $('#sbp').on('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
+            
+            // Waist Validation (นิ้ว)
+            $('#wc').on('change', function() {
+                if(this.value > 50) {
+                    alert('กรุณาเช็คคำตอบ เป็นหน่วยนิ้ว');
+                    $(this).val('');
+                }
+                updateRealtimeResult();
+            });
+
             $('input[name="useCholesterol"]').change(toggleMeasurementFields);
             $('#chk-stroke').change(function() {
                 this.checked ? $('#stroke-date-wrapper').slideDown() : $('#stroke-date-wrapper').slideUp();
@@ -326,9 +340,10 @@
             });
             $('.calc-trigger').on('input change', updateRealtimeResult);
             $('#village, #district').change(updateAddressAndHospital);
-            $('#role').change(() => {
-               const history = $('#history-alert').data('record');
-               if(history) displayHistoryAlert(history);
+            
+            // Role Change Logic
+            $('#role').change(function() {
+               checkHistoryDisplay();
             });
         });
 
@@ -342,33 +357,169 @@
             } catch (e) { console.error(e); }
         }
 
-        function populateVillageDropdown() { for (let i=1; i<=19; i++) $('#village').append(`<option value="${i}">${i}</option>`); }
+        // --- History Logic ---
+        function checkUserRegistration(uid) {
+            const url = `${GAS_URL}?userId=${encodeURIComponent(uid)}&callback=handleHistory`;
+            $.getScript(url);
+        }
 
-        function updateAddressAndHospital() {
-            const moo = $('#village').val(); 
-            const tb = $('#district').val();
-            const hospitals = { "ท่าหิน": "รพ.สต.ท่าหิน", "ด่านสวี": "รพ.สต.ด่านสวี", "เขาทะลุ": "รพ.สต.เขาทะลุ", "เขาค่าย": "รพ.สต.เขาค่าย", "ปากแพรก": "รพ.สต.ปากแพรก", "สวี": "รพ.สต.สวี", "นาสัก": { "1": "รพ.สต.บ้านแก่งกระทั่ง", "6": "รพ.สต.บ้านแก่งกระทั่ง", "11": "รพ.สต.บ้านแก่งกระทั่ง", "13": "รพ.สต.บ้านแก่งกระทั่ง", "18": "รพ.สต.บ้านแก่งกระทั่ง", "19": "รพ.สต.บ้านแก่งกระทั่ง", "7": "รพ.สต.บ้านไทยพัฒนา", "8": "รพ.สต.บ้านไทยพัฒนา", "9": "รพ.สต.บ้านไทยพัฒนา", "10": "รพ.สต.บ้านไทยพัฒนา", "12": "รพ.สต.บ้านไทยพัฒนา", "15": "รพ.สต.บ้านไทยพัฒนา", "16": "รพ.สต.บ้านไทยพัฒนา", "2": "รพ.สต.นาสัก", "3": "รพ.สต.นาสัก", "4": "รพ.สต.นาสัก", "5": "รพ.สต.นาสัก", "14": "รพ.สต.นาสัก", "17": "รพ.สต.นาสัก" }, "ทุ่งระยะ": { "5": "รพ.สต.บ้านคลองน้อย", "6": "รพ.สต.บ้านคลองน้อย", "7": "รพ.สต.บ้านคลองน้อย", "8": "รพ.สต.บ้านคลองน้อย", "9": "รพ.สต.บ้านคลองน้อย", "10": "รพ.สต.บ้านคลองน้อย", "1": "รพ.สต.ทุ่งระยะ", "2": "รพ.สต.ทุ่งระยะ", "3": "รพ.สต.ทุ่งระยะ", "4": "รพ.สต.ทุ่งระยะ", "11": "รพ.สต.ทุ่งระยะ" }, "วิสัยใต้": { "1": "รพ.สต.บ้านดอนทราย", "3": "รพ.สต.บ้านดอนทราย", "4": "รพ.สต.บ้านดอนทราย", "8": "รพ.สต.บ้านดอนทราย", "2": "รพ.สต.วิสัยใต้", "5": "รพ.สต.วิสัยใต้", "6": "รพ.สต.วิสัยใต้", "7": "รพ.สต.วิสัยใต้", "9": "รพ.สต.วิสัยใต้", "10": "รพ.สต.วิสัยใต้" }, "ครน": { "1": "รพ.สต.ครน", "2": "รพ.สต.ครน", "3": "รพ.สต.ครน", "4": "รพ.สต.ครน", "6": "รพ.สต.ครน", "12": "รพ.สต.ครน", "9": "รพ.สต.บ้านควนสามัคคี", "10": "รพ.สต.บ้านควนสามัคคี", "13": "รพ.สต.บ้านควนสามัคคี", "14": "รพ.สต.บ้านควนสามัคคี", "5": "รพ.สต.บ้านน้ำฉา", "7": "รพ.สต.บ้านน้ำฉา", "8": "รพ.สต.บ้านน้ำฉา", "11": "รพ.สต.บ้านน้ำฉา" }, "นาโพธิ์": "รพ.สวี (นาโพธิ์)" };
-            
-            let hosp = hospitals[tb]; 
-            if (typeof hosp === 'object') { hosp = hosp[moo] || ''; } 
-            
-            // แสดงผลใน input อัตโนมัติ
-            $('#pcu').val(hosp || '');
-            
-            if(moo && tb) {
-                $('#area').val(`ม.${moo} ต.${tb}`);
-            } else {
-                $('#area').val('');
+        window.handleHistory = function(res) {
+            if(res.status === 'found') {
+                historyData = res.data;
+                checkHistoryDisplay();
             }
         }
 
+        function checkHistoryDisplay() {
+            const role = $('#role').val();
+            const box = $('#history-alert');
+            box.empty();
+
+            if (role === 'ประเมินตัวเอง') {
+                if (historyData) {
+                    // Fill Data
+                    $('#name').val(historyData.name);
+                    $('#telephone').val(historyData.telephone);
+                    $('#hn').val(historyData.hn);
+                    if(historyData.village) $('#village').val(historyData.village);
+                    if(historyData.district) $('#district').val(historyData.district).trigger('change');
+                    
+                    // Format Date
+                    const d = new Date(historyData.timestamp);
+                    const dateStr = `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()+543} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} น.`;
+                    
+                    box.html(`<div class="status-box found">✅ คุณ (${historyData.name}) เคยประเมินล่าสุดเมื่อ: ${dateStr}</div>`);
+                }
+            } else {
+                // Clear personal data if switching to other (optional but safer)
+                $('#name').val('');
+                box.html(`<div class="status-box warn">⚠️ ท่านกำลังเลือกโหมด "ประเมินให้บุคคลอื่น"</div>`);
+            }
+        }
+
+        // --- Calculation Logic (Fixed Compare Risk) ---
+        function updateRealtimeResult() {
+            if(!$('#age').val() || !$('#sbp').val()) { $('#result-container').slideUp(); return; }
+            const result = calculateRisk();
+            globalRiskData = result;
+
+            $('#rt-percent').text(result.riskPercentText + "%").css('color', result.riskColor);
+            $('#rt-desc').text(result.riskGroup).css('color', result.riskColor);
+            $('#rt-bar').css('width', (result.barValue / 30 * 100) + "%").css('background', result.riskColor);
+            
+            // Detailed Explanation
+            let expHtml = `<b>ภายใน 10 ปีข้างหน้า</b> โอกาสเกิดโรคหลอดเลือดสมองของคุณคือ <span style="color:${result.riskColor}; font-weight:bold; font-size:24px;">${result.riskPercentText}%</span>`;
+            
+            if(result.compareRatio !== 'N/A' && result.compareRatio > 1 && !result.hasStrokeHistory) {
+                expHtml += `<br><br>⚠️ <b>เสี่ยงมากกว่า</b>คนทั่วไป (เพศ/วัยเดียวกัน) ถึง <span style="color:red; font-weight:bold;">${result.compareRatio} เท่า</span>`;
+            } else if (!result.hasStrokeHistory) {
+                expHtml += `<br><br>✅ ความเสี่ยงใกล้เคียงหรือต่ำกว่าคนทั่วไปในวัยเดียวกัน`;
+            }
+            
+            if(result.hasStrokeHistory) expHtml += `<br><br>🚨 เนื่องจากท่านมีประวัติสโตรก ความเสี่ยงจึงอยู่ในระดับ <b>สูงอันตราย</b> โดยอัตโนมัติ`;
+
+            $('#rt-explanation').html(expHtml);
+            $('#result-container').slideDown();
+        }
+
+        function calculateRisk() {
+            const inputs = {
+                age: parseFloat($('#age').val()) || 0,
+                sex: +$('input[name="sex"]:checked').val(), // 0 or 1
+                smoke: +$('input[name="smoke"]:checked').val(),
+                dm: +$('input[name="dm"]:checked').val(),
+                sbp: parseFloat($('#sbp').val()) || 0,
+                tc: $('input[name="useCholesterol"]:checked').val() === '1' ? parseFloat($('#tc').val()) || 0 : 0,
+                wc_inch: $('input[name="useCholesterol"]:checked').val() === '0' ? parseFloat($('#wc').val()) || 0 : 0,
+                ht: $('input[name="useCholesterol"]:checked').val() === '0' ? parseFloat($('#bdh').val()) || 0 : 0,
+                hasStrokeHistory: $('#chk-stroke').is(':checked')
+            };
+            
+            const wc_cm = inputs.wc_inch * 2.54;
+            const whr = (wc_cm > 0 && inputs.ht > 0) ? wc_cm / inputs.ht : 0;
+            const clamped = {
+                age: Math.max(30, Math.min(inputs.age, 70)),
+                sbp: Math.max(70, Math.min(inputs.sbp, 220)),
+                tc: inputs.tc > 0 ? Math.min(inputs.tc, 280) : 0,
+                whr: whr, wc_cm: wc_cm
+            };
+
+            // Calculate
+            let [ , predicted_risk, , baseline_risk ] = TASCVDformular(clamped.age, inputs.smoke, inputs.dm, clamped.sbp, inputs.sex, clamped.tc, clamped.whr, clamped.wc_cm);
+
+            let riskPercent = predicted_risk * 100;
+            let ratio = 0;
+
+            // Fix Logic for Ratio
+            if (baseline_risk > 0) {
+                ratio = predicted_risk / baseline_risk;
+            }
+
+            if (inputs.hasStrokeHistory) {
+                riskPercent = 40.00;
+            } else {
+                if (riskPercent > 30) riskPercent = 30.00;
+            }
+
+            const classification = classifyRisk(riskPercent);
+
+            return {
+                riskPercentText: riskPercent.toFixed(2),
+                barValue: Math.min(riskPercent, 30),
+                riskGroup: inputs.hasStrokeHistory ? "สูงอันตราย (มีประวัติเดิม)" : classification.text,
+                riskColor: inputs.hasStrokeHistory ? "#b00020" : classification.color,
+                compareRatio: (ratio > 0 && !inputs.hasStrokeHistory) ? ratio.toFixed(1) : 'N/A',
+                hasStrokeHistory: inputs.hasStrokeHistory,
+                inputs: inputs
+            };
+        }
+
+        // สูตรคำนวณ (คงเดิมแต่ return ครบ)
+        function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr, wc) { 
+            var sur_root = 0.964588; 
+            var full_score = 0, compare_score = 0;
+            var c_sbp = (sex==1 && age>60)?132 : (sex==0 && age<=60)?115 : (sex==0 && age>60)?130 : 120;
+            var c_whr = sex==0 ? 0.52667 : 0.58125; 
+            var c_wc = sex==0 ? 79 : 93;
+
+            // Note: compare_score calculates risk for a person with same age/sex but optimal factors
+            if (tc > 0) { 
+                full_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke); 
+                compare_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * c_sbp) + (0.00212 * 200); // TC 200 is baseline
+                return calc(full_score, 7.04423, compare_score);
+            } else if (whr > 0) { 
+                full_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke); 
+                compare_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * c_sbp) + (3.512566 * c_whr); 
+                return calc(full_score, 7.712325, compare_score);
+            } else if (wc > 0) { 
+                full_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * sbp) + (0.59953 * dm) + (0.01283 * wc) + (0.459 * smoke); 
+                compare_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * c_sbp) + (0.01283 * c_wc); 
+                return calc(full_score, 7.31047, compare_score);
+            } 
+            return [0,0,0,0];
+
+            function calc(score, mean, c_score) {
+                let risk = 1 - (Math.pow(sur_root, Math.exp(score - mean)));
+                let c_risk = 1 - (Math.pow(sur_root, Math.exp(c_score - mean)));
+                return [score, risk, c_score, c_risk]; // Index 3 is Compare Risk
+            }
+        }
+
+        function classifyRisk(p) {
+            if (p < 10) return { text: "ต่ำ", color: "#28a745" }; // Green
+            if (p < 20) return { text: "ปานกลาง", color: "#ffc107" }; // Yellow
+            if (p < 30) return { text: "สูง", color: "#fd7e14" }; // Orange
+            return { text: "สูงมาก/อันตราย", color: "#dc3545" }; // Red
+        }
+
+        // --- Save & Flex Message ---
         async function saveAndSend() {
             if(!globalRiskData) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
             if($('input[name="isSawiPatient"]:checked').val() === '1') {
-                if(!$('#telephone').val() || $('#telephone').val().length !== 10) { alert('กรุณากรอกเบอร์มือถือ'); return; }
+                if(!$('#telephone').val() || $('#telephone').val().length !== 10) { alert('กรุณากรอกเบอร์มือถือให้ครบ 10 หลัก'); return; }
                 if(!$('#village').val() || !$('#district').val()) { alert('กรุณาระบุที่อยู่'); return; }
-                if(!$('input[name="decision"]:checked').val()) { alert('กรุณาเลือกสิ่งที่จะทำเมื่อเกิดอาการ (คำถามข้อใหม่)'); return; }
-                if(!$('input[name="help"]:checked').val()) { alert('กรุณาระบุคนในบ้าน (คำถามข้อใหม่)'); return; }
+                if(!$('input[name="decision"]:checked').val()) { alert('กรุณาเลือกสิ่งที่จะทำเมื่อเกิดอาการ'); return; }
+                if(!$('input[name="help"]:checked').val()) { alert('กรุณาระบุคนในบ้าน'); return; }
             }
 
             const btn = $('#saveButton');
@@ -377,14 +528,21 @@
             try {
                 const ins = globalRiskData.inputs;
                 const sug = [];
-                if(ins.smoke) sug.push('เลิกบุหรี่');
-                if(ins.dm) sug.push('คุมระดับน้ำตาล');
-                if(ins.sbp>=140) sug.push('คุมความดันโลหิต');
-                const finalAdv = 'สังเกตอาการ B.E.F.A.S.T รีบไป รพ.';
-                const suggestionText = sug.join(', ') + '\n' + finalAdv;
+                
+                // Specific Suggestions
+                if(ins.smoke) sug.push('⛔ เลิกบุหรี่ทันทีเพื่อลดความเสี่ยง');
+                if(ins.dm) sug.push('🍬 คุมระดับน้ำตาล และทานยาต่อเนื่อง');
+                if(ins.sbp >= 130) sug.push('💓 คุมความดันโลหิต (ไม่ควรเกิน 130)');
+                if(ins.tc > 200) sug.push('🍳 คุมอาหาร ลดไขมัน (TC ไม่ควรเกิน 200)');
+                if(ins.wc_inch > 36) sug.push('🏋️‍♀️ ลดรอบเอว (ไม่ควรเกิน 36 นิ้ว)');
+
+                // Standard Advice
+                sug.push('⭐ ปฏิบัติตามหลัก "5 อ. 3 ส." เพื่อสุขภาพดี');
+                const finalAdv = '🚨 สังเกตอาการ B.E.F.A.S.T (หน้าเบี้ยว แขนอ่อนแรง พูดไม่ชัด) ให้รีบไป รพ.ทันที';
+                
+                const suggestionText = sug.length > 0 ? (sug.join('\n') + '\n\n' + finalAdv) : finalAdv;
 
                 const payload = {
-                    // Header set 1
                     timestamp: new Date(),
                     name: $('#name').val(),
                     role: $('#role').val(),
@@ -392,12 +550,12 @@
                     district: $('#district').val(),
                     village: $('#village').val(),
                     pcu: $('#pcu').val(),
-                    "u/d": $('input[name="ud"]:checked').map(function(){return this.value}).get().join(','), // ตรงกับ u/d
-                    help: $('input[name="help"]:checked').val(), // Radio: เลือกได้ค่าเดียว
-                    decision: $('input[name="decision"]:checked').val(), // Radio: เลือกได้ค่าเดียว
+                    "u/d": $('input[name="ud"]:checked').map(function(){return this.value}).get().join(','),
+                    help: $('input[name="help"]:checked').val(),
+                    decision: $('input[name="decision"]:checked').val(),
                     telephone: $('#telephone').val(),
                     line_id: $('#lineId').val(),
-                    gender: ins.sex == 1 ? 'ชาย' : 'หญิง', // แปลงเป็น Text หรือส่งเลขแล้วแต่ตกลง (Code เดิมส่ง 0/1) แต่นี่ส่ง Text ชัดเจน
+                    gender: ins.sex, // Send 0 or 1
                     age: ins.age,
                     smoke: ins.smoke,
                     dm: ins.dm,
@@ -409,7 +567,6 @@
                     risk_group: globalRiskData.riskGroup,
                     compare_risk: globalRiskData.compareRatio,
                     suggestion: suggestionText,
-                    // Line Info
                     userId: userProfile ? userProfile.userId : '',
                     displayName: userProfile ? userProfile.displayName : '',
                     pictureUrl: userProfile ? userProfile.pictureUrl : '',
@@ -438,109 +595,53 @@
             }
         }
 
-        // --- ส่วนคำนวณและอื่นๆ ยังคงเดิม (ย่อไว้) ---
+        async function sendFlex(data, name, suggestion) {
+            const msg = {
+                type: "flex",
+                altText: "ผลประเมินความเสี่ยงสโตรก",
+                contents: {
+                    type: "bubble",
+                    body: {
+                        type: "box", layout: "vertical",
+                        contents: [
+                            { type: "text", text: "ผลประเมินความเสี่ยงสโตรก", weight: "bold", color: data.riskColor, size: "md" },
+                            { type: "text", text: `คุณ ${name}`, weight: "bold", size: "xl", margin: "md" },
+                            { type: "text", text: "โอกาสเป็นสโตรกใน 10 ปี", size: "xs", color: "#aaaaaa", margin: "md" },
+                            { type: "text", text: `${data.riskPercentText}%`, type: "text", size: "5xl", weight: "bold", color: data.riskColor, margin: "none" },
+                            { type: "text", text: data.riskGroup, size: "lg", weight: "bold", color: "#555555", margin: "sm" },
+                            { type: "separator", margin: "xl" },
+                            { type: "box", layout: "vertical", margin: "lg", spacing: "sm",
+                              contents: [
+                                  { type: "text", text: "คำแนะนำ:", weight: "bold", size: "sm", color: "#333333" },
+                                  { type: "text", text: suggestion, wrap: true, size: "sm", color: "#666666", lineHeight: "1.6em" }
+                              ]
+                            }
+                        ]
+                    },
+                    styles: { footer: { separator: true } }
+                }
+            };
+            return liff.sendMessages([msg]);
+        }
+
+        // --- Helper ---
+        function populateVillageDropdown() { for (let i=1; i<=19; i++) $('#village').append(`<option value="${i}">${i}</option>`); }
         function toggleMeasurementFields() {
             const useChol = $('input[name="useCholesterol"]:checked').val() === '1';
             $('#tc_group').toggle(useChol);
             $('#body_measure_group').toggle(!useChol);
             updateRealtimeResult();
         }
-
-        function updateRealtimeResult() {
-            if(!$('#age').val() || !$('#sbp').val()) { $('#result-container').slideUp(); return; }
-            const result = calculateRisk();
-            globalRiskData = result;
-            $('#rt-percent').text(result.riskPercentText + "%").css('color', result.riskColor);
-            $('#rt-desc').text(result.riskGroup).css('color', result.riskColor);
-            $('#rt-bar').css('width', (result.barValue / 30 * 100) + "%").css('background', result.riskColor);
-            $('#rt-explanation').html(`ภายใน 10 ปี ท่านมีโอกาสเป็นโรคหลอดเลือดสมอง <b>${result.riskPercentText}%</b>`);
-            $('#result-container').slideDown();
+        function updateAddressAndHospital() {
+            const moo = $('#village').val(); 
+            const tb = $('#district').val();
+            // (ใส่ข้อมูล รพ.สต. เดิมของคุณที่นี่ - ผมย่อไว้เพื่อให้โค้ดไม่ยาวเกินไป แต่ Logic เดิมยังอยู่)
+            const hospitals = { "ท่าหิน": "รพ.สต.ท่าหิน", "ด่านสวี": "รพ.สต.ด่านสวี", "เขาทะลุ": "รพ.สต.เขาทะลุ", "เขาค่าย": "รพ.สต.เขาค่าย", "ปากแพรก": "รพ.สต.ปากแพรก", "สวี": "รพ.สต.สวี", "นาสัก": { "1": "รพ.สต.บ้านแก่งกระทั่ง", "6": "รพ.สต.บ้านแก่งกระทั่ง", "11": "รพ.สต.บ้านแก่งกระทั่ง", "13": "รพ.สต.บ้านแก่งกระทั่ง", "18": "รพ.สต.บ้านแก่งกระทั่ง", "19": "รพ.สต.บ้านแก่งกระทั่ง", "7": "รพ.สต.บ้านไทยพัฒนา", "8": "รพ.สต.บ้านไทยพัฒนา", "9": "รพ.สต.บ้านไทยพัฒนา", "10": "รพ.สต.บ้านไทยพัฒนา", "12": "รพ.สต.บ้านไทยพัฒนา", "15": "รพ.สต.บ้านไทยพัฒนา", "16": "รพ.สต.บ้านไทยพัฒนา", "2": "รพ.สต.นาสัก", "3": "รพ.สต.นาสัก", "4": "รพ.สต.นาสัก", "5": "รพ.สต.นาสัก", "14": "รพ.สต.นาสัก", "17": "รพ.สต.นาสัก" }, "ทุ่งระยะ": { "5": "รพ.สต.บ้านคลองน้อย", "6": "รพ.สต.บ้านคลองน้อย", "7": "รพ.สต.บ้านคลองน้อย", "8": "รพ.สต.บ้านคลองน้อย", "9": "รพ.สต.บ้านคลองน้อย", "10": "รพ.สต.บ้านคลองน้อย", "1": "รพ.สต.ทุ่งระยะ", "2": "รพ.สต.ทุ่งระยะ", "3": "รพ.สต.ทุ่งระยะ", "4": "รพ.สต.ทุ่งระยะ", "11": "รพ.สต.ทุ่งระยะ" }, "วิสัยใต้": { "1": "รพ.สต.บ้านดอนทราย", "3": "รพ.สต.บ้านดอนทราย", "4": "รพ.สต.บ้านดอนทราย", "8": "รพ.สต.บ้านดอนทราย", "2": "รพ.สต.วิสัยใต้", "5": "รพ.สต.วิสัยใต้", "6": "รพ.สต.วิสัยใต้", "7": "รพ.สต.วิสัยใต้", "9": "รพ.สต.วิสัยใต้", "10": "รพ.สต.วิสัยใต้" }, "ครน": { "1": "รพ.สต.ครน", "2": "รพ.สต.ครน", "3": "รพ.สต.ครน", "4": "รพ.สต.ครน", "6": "รพ.สต.ครน", "12": "รพ.สต.ครน", "9": "รพ.สต.บ้านควนสามัคคี", "10": "รพ.สต.บ้านควนสามัคคี", "13": "รพ.สต.บ้านควนสามัคคี", "14": "รพ.สต.บ้านควนสามัคคี", "5": "รพ.สต.บ้านน้ำฉา", "7": "รพ.สต.บ้านน้ำฉา", "8": "รพ.สต.บ้านน้ำฉา", "11": "รพ.สต.บ้านน้ำฉา" }, "นาโพธิ์": "รพ.สวี (นาโพธิ์)" };
+            let hosp = hospitals[tb]; 
+            if (typeof hosp === 'object') { hosp = hosp[moo] || ''; } 
+            $('#pcu').val(hosp || '');
+            if(moo && tb) { $('#area').val(`ม.${moo} ต.${tb}`); } else { $('#area').val(''); }
         }
-
-        function calculateRisk() {
-            const inputs = {
-                age: parseFloat($('#age').val()) || 0,
-                sex: +$('input[name="sex"]:checked').val(),
-                smoke: +$('input[name="smoke"]:checked').val(),
-                dm: +$('input[name="dm"]:checked').val(),
-                sbp: parseFloat($('#sbp').val()) || 0,
-                tc: $('input[name="useCholesterol"]:checked').val() === '1' ? parseFloat($('#tc').val()) || 0 : 0,
-                wc_inch: $('input[name="useCholesterol"]:checked').val() === '0' ? parseFloat($('#wc').val()) || 0 : 0,
-                ht: $('input[name="useCholesterol"]:checked').val() === '0' ? parseFloat($('#bdh').val()) || 0 : 0,
-                hasStrokeHistory: $('#chk-stroke').is(':checked')
-            };
-            
-            const wc_cm = inputs.wc_inch * 2.54;
-            const whr = (wc_cm > 0 && inputs.ht > 0) ? wc_cm / inputs.ht : 0;
-            const clamped = {
-                age: Math.max(30, Math.min(inputs.age, 70)),
-                sbp: Math.max(70, Math.min(inputs.sbp, 220)),
-                tc: inputs.tc > 0 ? Math.min(inputs.tc, 280) : 0,
-                whr: whr, wc_cm: wc_cm
-            };
-
-            let [ , predicted_risk, , compare_risk ] = TASCVDformular(clamped.age, inputs.smoke, inputs.dm, clamped.sbp, inputs.sex, clamped.tc, clamped.whr, clamped.wc_cm);
-
-            let riskPercent = predicted_risk * 100;
-            let ratio = 0;
-
-            if (inputs.hasStrokeHistory) {
-                riskPercent = 40.00;
-            } else {
-                if (riskPercent > 30) riskPercent = 30.00;
-                if (compare_risk > 0) ratio = predicted_risk / compare_risk;
-            }
-
-            const classification = classifyRisk(riskPercent);
-
-            return {
-                riskPercentText: riskPercent.toFixed(2),
-                barValue: Math.min(riskPercent, 30),
-                riskGroup: inputs.hasStrokeHistory ? "สูงอันตราย (มีประวัติสโตรก)" : classification.text,
-                riskColor: inputs.hasStrokeHistory ? "#b00020" : classification.color,
-                compareRatio: (ratio > 0 && !inputs.hasStrokeHistory) ? ratio.toFixed(1) : 'N/A',
-                hasStrokeHistory: inputs.hasStrokeHistory,
-                inputs: inputs
-            };
-        }
-
-        function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr, wc) { 
-            var sur_root = 0.964588; 
-            var full_score = 0, compare_score = 0;
-            var c_sbp = (sex==1 && age>60)?132 : (sex==0 && age<=60)?115 : (sex==0 && age>60)?130 : 120;
-            var c_whr = sex==0 ? 0.52667 : 0.58125; 
-            var c_wc = sex==0 ? 79 : 93;
-            if (tc > 0) { 
-                full_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * sbp) + (0.69974 * dm) + (0.00212 * tc) + (0.41916 * smoke); 
-                compare_score = (0.08183 * age) + (0.39499 * sex) + (0.02084 * c_sbp) + (0.00212 * 200); 
-                return calc(full_score, 7.04423, compare_score);
-            } else if (whr > 0) { 
-                full_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * sbp) + (0.58454 * dm) + (3.512566 * whr) + (0.459 * smoke); 
-                compare_score = (0.079 * age) + (0.128 * sex) + (0.019350987 * c_sbp) + (3.512566 * c_whr); 
-                return calc(full_score, 7.712325, compare_score);
-            } else if (wc > 0) { 
-                full_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * sbp) + (0.59953 * dm) + (0.01283 * wc) + (0.459 * smoke); 
-                compare_score = (0.08372 * age) + (0.05988 * sex) + (0.02034 * c_sbp) + (0.01283 * c_wc); 
-                return calc(full_score, 7.31047, compare_score);
-            } 
-            return [0,0,0,0];
-            function calc(score, mean, c_score) {
-                let risk = 1 - (Math.pow(sur_root, Math.exp(score - mean)));
-                let c_risk = 1 - (Math.pow(sur_root, Math.exp(c_score - mean)));
-                return [score, risk, c_score, c_risk];
-            }
-        }
-
-        function classifyRisk(p) {
-            if (p < 10) return { text: "ต่ำ", color: "#28a745" };
-            if (p < 20) return { text: "ปานกลาง", color: "#ffc107" };
-            if (p < 30) return { text: "สูง", color: "#fd7e14" };
-            return { text: "สูงมาก/อันตราย", color: "#dc3545" };
-        }
-        
-        async function sendFlex(data, name, suggestion) { /* Function เดิม */ }
-        function checkUserRegistration(uid) { /* Function เดิม */ }
-        function displayHistoryAlert(r) { /* Function เดิม */ }
     </script>
 </body>
 </html>

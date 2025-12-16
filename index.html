@@ -17,26 +17,34 @@
             font-size: 18px; 
             margin: 0; color: #333;
             line-height: 1.5;
-            /* พื้นหลังสีแดงอ่อนไล่ไปขาว */
-            background: linear-gradient(180deg, #fc6f79 0%, #ffffff 400px);
-            background-repeat: no-repeat;
             min-height: 100vh;
+            
+            /* เทคนิคไล่สี 2 ชั้น: 
+               1. แนวตั้ง (Layer บน): โปร่งใส -> ขาว (เริ่มขาวที่ 400px) 
+               2. แนวนอน (Layer ล่าง): ฟ้า -> เทา -> ชมพู 
+            */
+            background: 
+                linear-gradient(180deg, rgba(255,255,255,0) 0%, #ffffff 400px),
+                linear-gradient(90deg, #6ffcf3 0%, #dce0e0 50%, #fa93a3 100%);
+            
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* ให้สีพื้นหลังเกาะติดจอ */
         }
         .container { 
             max-width: 100%; 
             padding: 15px; 
             margin: 0 auto;
-            padding-bottom: 40px; /* เผื่อที่ให้ Footer */
+            padding-bottom: 40px; 
         }
 
-        /* --- Header (อยู่นอก Card) --- */
+        /* --- Header --- */
         .header-group { 
             display: flex; align-items: center; justify-content: center; 
-            margin-bottom: 25px; position: relative; 
-            padding-top: 15px;
+            margin-bottom: 10px; /* ลดระยะห่างจาก Card ตามคำขอ */
+            padding-top: 20px;
         }
         h1 { 
-            color: #ffffff; /* สีขาว */
+            color: #ffffff; 
             font-weight: 900; 
             font-size: 24px; 
             margin: 0; 
@@ -44,26 +52,23 @@
         }
         #btn-disclaimer {
             font-size: 16px; padding: 6px 15px; border-radius: 25px;
-            background: #ccff90; 
-            color: #006400; 
-            border: 2px solid #b2ff59;
-            margin-left: 12px; cursor: pointer; flex-shrink: 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-            font-weight: bold;
+            background: #ccff90; color: #006400; border: 2px solid #b2ff59;
+            margin-left: 12px; cursor: pointer; flex-shrink: 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15); font-weight: bold;
         }
         #btn-disclaimer:active { transform: scale(0.95); }
 
         /* --- Main Card --- */
         .main-card {
-            background: #ffffff;
+            background: #ffffff; 
             border-radius: 20px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            padding: 25px;
-            margin-bottom: 20px;
+            padding: 25px; 
+            margin-bottom: 40px; 
             border: 1px solid #f0f0f0;
         }
 
-        /* --- Footer Credit (นอก Card) --- */
+        /* --- Footer --- */
         .footer-credit {
             text-align: center;
             color: #666;
@@ -81,70 +86,46 @@
 
         input[type="number"], input[type="text"], input[type="date"], select { 
             width: 100%; padding: 12px; font-size: 22px; 
-            border-radius: 12px; border: 1px solid #ccc; 
-            background: #fdfdfd;
+            border-radius: 12px; border: 1px solid #ccc; background: #fdfdfd;
         }
-        input:focus, select:focus { border-color: #fc6f79; outline: none; background: #fff; box-shadow: 0 0 0 0.25rem rgba(252, 111, 121, 0.2); }
+        /* เปลี่ยนสี Glow ตอน Focus ให้เข้ากับธีมชมพูอ่อนๆ */
+        input:focus, select:focus { border-color: #fa93a3; outline: none; background: #fff; box-shadow: 0 0 0 0.25rem rgba(250, 147, 163, 0.25); }
 
-        /* Radio/Checkbox */
         .inline-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .radio-label { font-weight: normal; display: flex; align-items: center; cursor: pointer; font-size: 20px; }
-        input[type="radio"], input[type="checkbox"] { transform: scale(1.6); margin-right: 10px; accent-color: #fc6f79; }
+        input[type="radio"], input[type="checkbox"] { transform: scale(1.6); margin-right: 10px; accent-color: #fa93a3; }
 
-        /* Info Box */
-        #patientForm { 
-            background-color: #FFFDE7; border: 2px solid #FFC107; 
-            padding: 20px; border-radius: 15px; margin-top: 15px;
-        }
+        #patientForm { background-color: #FFFDE7; border: 2px solid #FFC107; padding: 20px; border-radius: 15px; margin-top: 15px; }
 
-        /* Result Section */
+        /* --- Result --- */
         #result-container { 
-            margin-top: 30px; padding: 25px; 
-            background: #f8fcf9; border-radius: 15px;
+            margin-top: 30px; padding: 25px; background: #f8fcf9; border-radius: 15px;
             border: 2px solid #c3e6cb; display: none; text-align: center;
         }
         .risk-percent { font-size: 4.5rem; font-weight: 900; line-height: 1; margin: 15px 0; }
         .risk-desc { font-size: 2rem; font-weight: bold; margin-bottom: 15px; }
         .progress-bar-bg { width: 100%; height: 30px; background: #e9ecef; border-radius: 15px; overflow: hidden; margin: 20px 0; }
         .progress-bar-fill { height: 100%; width: 0%; transition: width 0.8s ease; }
-        
-        .explanation-box { 
-            text-align: left; background: #fff; padding: 20px; 
-            border-radius: 15px; margin-top: 20px; 
-            font-size: 20px; 
-            line-height: 1.6; border: 1px solid #dee2e6; 
-            color: #333;
-            white-space: pre-wrap; 
-        }
+        .explanation-box { text-align: left; background: #fff; padding: 20px; border-radius: 15px; margin-top: 20px; font-size: 20px; line-height: 1.6; border: 1px solid #dee2e6; color: #333; white-space: pre-wrap; }
 
-        /* --- Action Buttons --- */
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
-        }
+        /* --- Buttons --- */
+        .action-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
         .btn-action { 
             width: 100%; padding: 15px; font-size: 22px; font-weight: bold;
             color: white; border: none; border-radius: 50px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: transform 0.1s;
         }
         .btn-action:active { transform: scale(0.98); }
         .btn-green { background-color: #28a745; }
         .btn-red { background-color: #dc3545; }
         .btn-action:disabled { background-color: #888; cursor: not-allowed; }
 
-        .hidden { display: none; }
         .status-box { padding: 12px; border-radius: 10px; text-align: center; font-size: 18px; margin-bottom: 20px; font-weight: bold; line-height: 1.4; }
         .found { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
         .warn { background: #fff3cd; color: #856404; border: 1px solid #ffecb5; }
-        
-        #loading { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(255,255,255,0.95); display: flex; 
-            justify-content: center; align-items: center; z-index: 9999; 
-        }
+        .phone-alert { color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 18px; display: none; }
+
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; }
     </style>
 </head>
 <body>
@@ -212,6 +193,8 @@
                     <div class="form-row" style="border:none;">
                         <label>เบอร์โทรศัพท์ของผู้ถูกประเมิน (จำเป็น*):</label>
                         <input type="text" id="telephone" maxlength="10" inputmode="numeric" placeholder="เบอร์โทรศัพท์ 10 หลัก">
+                        <!-- แจ้งเตือนเมื่อเจอเบอร์ซ้ำ -->
+                        <div id="phone-msg" class="phone-alert"></div>
                     </div>
                     <div class="form-row" style="border:none;">
                         <label>LINE ID:</label>
@@ -249,6 +232,16 @@
                         <label class="radio-label" style="align-items: flex-start;">
                             <input type="checkbox" id="allowTel" checked style="margin-top: 5px;"> 
                             <span style="font-size: 18px;">ยินยอมให้ข้อมูลเบอร์โทร/ที่อยู่ แก่ อสม.และ จนท.รพ.สวี</span>
+                        </label>
+                    </div>
+
+                    <!-- PDPA Section -->
+                    <div class="form-row" style="border:none; border-top: 1px dashed #bbb; padding-top: 15px; margin-top: 10px;">
+                        <label class="radio-label" style="align-items: flex-start; background-color: #e8f5e9; padding: 10px; border-radius: 10px; border: 1px solid #c8e6c9;">
+                            <input type="checkbox" id="pdpa" checked style="margin-top: 5px;"> 
+                            <span style="font-size: 18px; color: #2e7d32; font-weight: bold;">
+                                ยินยอมให้ รพ.สวี นำข้อมูลไปประมวลผลเพื่อเพิ่มความตระหนักรู้และการเข้าถึงการรักษาโรคหลอดเลือดสมอง
+                            </span>
                         </label>
                     </div>
 
@@ -364,21 +357,19 @@
                 </div>
             </div>
 
-            <!-- Action Buttons Group -->
             <div class="action-buttons">
                 <button type="button" class="btn-action btn-green" onclick="saveAndSend('history')">บันทึกและดูประวัติ</button>
                 <button type="button" class="btn-action btn-red" onclick="saveAndSend('close')">บันทึกและปิด</button>
             </div>
         
-        </div> <!-- End Main Card -->
+        </div>
 
-        <!-- Footer Text Outside -->
         <div class="footer-credit">จัดทำโดย "สวีรู้ทันสโตรก" รพ.สวี จ.ชุมพร</div>
 
     </div>
 
     <script>
-        const LIFF_ID = '2005789397-nebQ8oJy'; // LIFF ID
+        const LIFF_ID = '2005789397-nebQ8oJy'; 
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec';
         
         let userProfile = null;
@@ -395,6 +386,23 @@
             $('input[name="isSawiPatient"]').change(function() {
                 $(this).val() === '1' ? $('#patientForm').slideDown() : $('#patientForm').slideUp();
             });
+            
+            // --- Check Phone Number Logic ---
+            $('#telephone').on('change', function() {
+                const phone = $(this).val();
+                if(phone.length === 10) {
+                    $('#phone-msg').hide().text('');
+                    // เรียก GAS เพื่อเช็ค
+                    $.getJSON(GAS_URL, { checkPhone: phone }, function(res) {
+                        if(res.status === 'found') {
+                            $('#phone-msg').html(`⚠️ หมายเลขนี้มีประวัติของคุณ <b>${res.name}</b> แล้ว<br>ข้อมูลนี้จะถูกบันทึกลงในประวัติของบุคคลดังกล่าว`).slideDown();
+                        }
+                    });
+                } else {
+                    $('#phone-msg').hide();
+                }
+            });
+
             $('#sbp').on('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
             $('#wc').on('change', function() {
                 if(this.value > 60) { alert('กรุณาเช็คคำตอบ เป็นหน่วยนิ้ว (ค่าไม่ควรเกิน 60)'); $(this).val(''); }
@@ -463,9 +471,10 @@
             $('#result-container').slideDown();
         }
 
-        // --- Save & Send (รับ Parameter actionType) ---
+        // --- Save & Send ---
         async function saveAndSend(actionType) {
             let missingFields = [];
+            // ... (Validation) ...
             if(!$('input[name="sex"]:checked').val()) missingFields.push("เพศ");
             if(!$('#age').val()) missingFields.push("อายุ");
             if(!$('#sbp').val()) missingFields.push("ความดันตัวบน");
@@ -481,7 +490,6 @@
             
             if(missingFields.length > 0) { alert("กรุณากรอก: " + missingFields.join(", ")); return; }
 
-            // Disable all buttons
             $('.btn-action').prop('disabled', true).text('กำลังส่งข้อมูล...');
 
             try {
@@ -516,7 +524,7 @@
                     displayName: userProfile ? userProfile.displayName : '',
                     pictureUrl: userProfile ? userProfile.pictureUrl : '',
                     allow_tel: $('#allowTel').is(':checked')?'Yes':'No',
-                    pdpa: 'Yes',
+                    pdpa: $('#pdpa').is(':checked') ? 'Yes' : 'No', // ส่งค่า PDPA
                     area: $('#area').val()
                 };
 
@@ -529,13 +537,8 @@
                     await sendFlex(globalRiskData, payload.name, finalSuggestion);
                     
                     if (actionType === 'history') {
-                        // ไปหน้าประวัติส่วนตัว
-                        liff.openWindow({
-                            url: "https://liff.line.me/2005789397-RLAGXrBJ",
-                            external: false
-                        });
+                        liff.openWindow({ url: "https://liff.line.me/2005789397-RLAGXrBJ", external: false });
                     } else {
-                        // ปิดหน้าต่าง
                         liff.closeWindow();
                     }
                 } else {
@@ -549,7 +552,7 @@
             }
         }
 
-        // --- Flex Message (Enhanced & Robust) ---
+        // --- Flex Message ---
         async function sendFlex(data, name, suggestion) {
             const safeName = (name && name.trim() !== "") ? String(name) : "ผู้รับบริการ";
             const safeSuggestion = (suggestion && suggestion.trim() !== "") ? String(suggestion) : "ไม่มีคำแนะนำเพิ่มเติม";
@@ -559,14 +562,14 @@
 
             const msg = {
                 type: "flex",
-                altText: "ผลประเมินสวีรู้ทันสโตรก", // Alt Text ใหม่
+                altText: "ผลประเมินสวีรู้ทันสโตรก",
                 contents: {
                     type: "bubble",
-                    size: "giga", // กว้างเต็มจอ
+                    size: "giga", 
                     header: {
                         type: "box",
                         layout: "vertical",
-                        backgroundColor: safeColor, // สีพื้นหลังตามความเสี่ยง
+                        backgroundColor: safeColor, 
                         paddingAll: "20px",
                         contents: [
                             {

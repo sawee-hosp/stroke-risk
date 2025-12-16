@@ -17,8 +17,8 @@
             font-size: 18px; 
             margin: 0; color: #333;
             line-height: 1.5;
-            /* ไล่สีแดงอ่อนไปขาว */
-            background: linear-gradient(180deg, #fc6f79 0%, #ffffff 500px);
+            /* พื้นหลังสีแดงอ่อนไล่ไปขาว */
+            background: linear-gradient(180deg, #fc6f79 0%, #ffffff 400px);
             background-repeat: no-repeat;
             min-height: 100vh;
         }
@@ -31,30 +31,36 @@
         /* --- Header (อยู่นอก Card) --- */
         .header-group { 
             display: flex; align-items: center; justify-content: center; 
-            margin-bottom: 20px; position: relative; 
-            padding-top: 10px;
+            margin-bottom: 25px; position: relative; 
+            padding-top: 15px;
         }
         h1 { 
-            color: #003366; 
-            font-weight: 800; font-size: 26px; margin: 0; 
-            text-shadow: 0 2px 4px rgba(255,255,255,0.5); 
+            color: #ffffff; /* สีขาว */
+            font-weight: 900; 
+            font-size: 28px; 
+            margin: 0; 
+            /* เงาเข้มเพื่อให้ตัดกับพื้นแดงชัดเจน */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4); 
         }
         #btn-disclaimer {
-            font-size: 16px; padding: 5px 15px; border-radius: 20px;
-            background: #28a745; 
-            color: white; border: none;
-            margin-left: 10px; cursor: pointer; flex-shrink: 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-size: 16px; padding: 6px 15px; border-radius: 25px;
+            background: #ccff90; /* สีเขียวอ่อนสดใส */
+            color: #006400; /* ตัวหนังสือเขียวเข้ม */
+            border: 2px solid #b2ff59;
+            margin-left: 12px; cursor: pointer; flex-shrink: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            font-weight: bold;
         }
+        #btn-disclaimer:active { transform: scale(0.95); }
 
         /* --- Main Card (เนื้อหาอยู่ในนี้) --- */
         .main-card {
             background: #ffffff;
             border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             padding: 25px;
-            margin-bottom: 30px;
-            border: none;
+            margin-bottom: 40px;
+            border: 1px solid #f0f0f0;
         }
 
         /* --- Forms --- */
@@ -66,10 +72,10 @@
 
         input[type="number"], input[type="text"], input[type="date"], select { 
             width: 100%; padding: 12px; font-size: 22px; 
-            border-radius: 10px; border: 1px solid #ccc; 
-            background: #f9f9f9;
+            border-radius: 12px; border: 1px solid #ccc; 
+            background: #fdfdfd;
         }
-        input:focus, select:focus { border-color: #fc6f79; outline: none; background: #fff; box-shadow: 0 0 0 0.2rem rgba(252, 111, 121, 0.25); }
+        input:focus, select:focus { border-color: #fc6f79; outline: none; background: #fff; box-shadow: 0 0 0 0.25rem rgba(252, 111, 121, 0.2); }
 
         /* Radio/Checkbox */
         .inline-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
@@ -84,12 +90,12 @@
 
         /* Result Section */
         #result-container { 
-            margin-top: 25px; padding: 25px; 
-            background: #fdfdfe; border-radius: 15px;
-            border: 2px solid #ddd; display: none; text-align: center;
+            margin-top: 30px; padding: 25px; 
+            background: #f8fcf9; border-radius: 15px;
+            border: 2px solid #c3e6cb; display: none; text-align: center;
         }
-        .risk-percent { font-size: 4rem; font-weight: 900; line-height: 1; margin: 15px 0; }
-        .risk-desc { font-size: 1.8rem; font-weight: bold; margin-bottom: 15px; }
+        .risk-percent { font-size: 4.5rem; font-weight: 900; line-height: 1; margin: 15px 0; }
+        .risk-desc { font-size: 2rem; font-weight: bold; margin-bottom: 15px; }
         .progress-bar-bg { width: 100%; height: 30px; background: #e9ecef; border-radius: 15px; overflow: hidden; margin: 20px 0; }
         .progress-bar-fill { height: 100%; width: 0%; transition: width 0.8s ease; }
         
@@ -100,28 +106,26 @@
             font-size: 20px; 
             line-height: 1.6; border: 1px solid #dee2e6; 
             color: #333;
-        }
-        .full-advice-text {
-            white-space: pre-line; 
-            color: #444;
+            white-space: pre-wrap; /* ให้เว้นบรรทัดตาม \n */
         }
 
         button#saveButton { 
             width: 100%; padding: 15px; font-size: 24px; font-weight: bold;
             color: white; background-color: #28a745; border: none; border-radius: 50px; 
-            margin-top: 30px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+            margin-top: 30px; box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
             transition: all 0.2s;
         }
-        button#saveButton:active { transform: scale(0.95); }
+        button#saveButton:active { transform: scale(0.98); }
+        button#saveButton:disabled { background-color: #888; cursor: not-allowed; }
 
         .hidden { display: none; }
-        .status-box { padding: 10px; border-radius: 8px; text-align: center; font-size: 18px; margin-bottom: 15px; font-weight: bold; line-height: 1.4; }
+        .status-box { padding: 12px; border-radius: 10px; text-align: center; font-size: 18px; margin-bottom: 20px; font-weight: bold; line-height: 1.4; }
         .found { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
         .warn { background: #fff3cd; color: #856404; border: 1px solid #ffecb5; }
         
         #loading { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(255,255,255,0.9); display: flex; 
+            background: rgba(255,255,255,0.95); display: flex; 
             justify-content: center; align-items: center; z-index: 9999; 
         }
     </style>
@@ -130,6 +134,7 @@
 
     <div id="loading"><div class="spinner-border text-danger" style="width: 3rem; height: 3rem;"></div></div>
 
+    <!-- Modal Disclaimer -->
     <div class="modal fade" id="disclaimerModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -147,11 +152,13 @@
     </div>
 
     <div class="container">
+        <!-- Header Group -->
         <div class="header-group">
             <h1>ประเมินความเสี่ยงสโตรก</h1>
             <button id="btn-disclaimer" type="button" data-bs-toggle="modal" data-bs-target="#disclaimerModal">อ่านก่อน</button>
         </div>
         
+        <!-- Main Card -->
         <div class="main-card">
             
             <div id="history-alert"></div>
@@ -183,10 +190,11 @@
                     </div>
                 </div>
 
+                <!-- Patient Info Box -->
                 <div id="patientForm">
                     <div class="form-row" style="border:none;">
-                        <label>เบอร์โทรศัพท์ (จำเป็น*):</label>
-                        <input type="text" id="telephone" maxlength="10" inputmode="numeric" placeholder="เบอร์โทรศัพท์ของผู้ถูกประเมิน">
+                        <label>เบอร์โทรศัพท์ของผู้ถูกประเมิน (จำเป็น*):</label>
+                        <input type="text" id="telephone" maxlength="10" inputmode="numeric" placeholder="เบอร์โทรศัพท์ 10 หลัก">
                     </div>
                     <div class="form-row" style="border:none;">
                         <label>LINE ID:</label>
@@ -332,21 +340,22 @@
                     <div class="progress-bar-fill" id="rt-bar"></div>
                 </div>
                 
+                <!-- กล่องคำแนะนำ แสดงผลทันทีบนเว็บ -->
                 <div class="explanation-box" id="rt-explanation">
                     <div id="basic-explain"></div>
-                    <hr style="border-top: 1px dashed #ccc; margin: 20px 0;">
-                    <b>คำแนะนำและการปฏิบัติตัว:</b>
-                    <div id="full-advice-display" class="full-advice-text"></div>
+                    <hr style="border-top: 2px dashed #ccc; margin: 25px 0;">
+                    <div id="full-advice-display"></div>
                 </div>
             </div>
 
             <button id="saveButton" onclick="saveAndSend()">บันทึกและดูผลประเมิน</button>
             <div style="text-align:center; margin-top:30px; color:#888; font-size: 14px;">จัดทำโดย "สวีรู้ทันสโตรก" รพ.สวี จ.ชุมพร</div>
         
-        </div> </div>
+        </div> <!-- End Main Card -->
+    </div>
 
     <script>
-        const LIFF_ID = '2005789397-nebQ8oJy'; 
+        const LIFF_ID = '2005789397-nebQ8oJy'; // LIFF ID
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0eiZGphjI0eIORtVhPu8tjVAvEBV2FZGRRJxw6WmdHpIxVBDQM52nW3PJufhrnd4qgg/exec';
         
         let userProfile = null;
@@ -359,12 +368,13 @@
             populateVillageDropdown();
             toggleMeasurementFields();
             
+            // Listeners
             $('input[name="isSawiPatient"]').change(function() {
                 $(this).val() === '1' ? $('#patientForm').slideDown() : $('#patientForm').slideUp();
             });
             $('#sbp').on('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
             $('#wc').on('change', function() {
-                if(this.value > 50) { alert('กรุณาเช็คคำตอบ เป็นหน่วยนิ้ว'); $(this).val(''); }
+                if(this.value > 60) { alert('กรุณาเช็คคำตอบ เป็นหน่วยนิ้ว (ค่าไม่ควรเกิน 60)'); $(this).val(''); }
                 updateRealtimeResult();
             });
             $('input[name="useCholesterol"]').change(toggleMeasurementFields);
@@ -387,18 +397,28 @@
             } catch (e) { console.error(e); }
         }
 
-        // --- Generate Suggestion Logic ---
+        // --- Logic: สร้างคำแนะนำ (Update: 120/200 threshold) ---
         function generateSuggestionText(data) {
             const ins = data.inputs;
             const sug = [];
             
+            // บุหรี่
             if(ins.smoke) sug.push('⛔ ท่านสูบบุหรี่: แนะนำให้ "เลิกสูบ" ทันที เพื่อลดความเสี่ยงสโตรกและมะเร็ง');
+            
+            // เบาหวาน
             if(ins.dm) sug.push('🍬 ท่านเป็นเบาหวาน: ควบคุมระดับน้ำตาล (HbA1c < 7%) กินยาตามแพทย์สั่งสม่ำเสมอ');
-            if(ins.sbp >= 130) sug.push(`💓 ความดันตัวบนสูง (${ins.sbp} mmHg): ควรลดอาหารเค็ม/ผงปรุงรส ออกกำลังกาย และทานยาหากแพทย์สั่ง (เกณฑ์ปกติไม่ควรเกิน 130)`);
+            
+            // ความดัน (ปรับเกณฑ์เป็น 120 ตามขอ)
+            if(ins.sbp >= 120) sug.push(`💓 ความดันตัวบนเริ่มสูง (${ins.sbp} mmHg): ควรลดอาหารเค็ม/ผงปรุงรส ออกกำลังกายสม่ำเสมอ (เกณฑ์ปกติไม่ควรเกิน 120)`);
+            
+            // คอเลสเตอรอล (ปรับเกณฑ์ 200 ตามขอ)
             if(ins.tc > 200) sug.push(`🍳 ไขมันในเลือดสูง (${ins.tc} mg/dL): หลีกเลี่ยงของทอด กะทิ เครื่องในสัตว์ (เกณฑ์ปกติไม่ควรเกิน 200)`);
+            
+            // รอบเอว
             if(ins.wc_inch > 36) sug.push(`🏋️‍♀️ รอบเอวเกินเกณฑ์ (${ins.wc_inch} นิ้ว): ควรลดหวาน/มัน/เค็ม เพิ่มการเดินหรือออกกำลังกาย (เกณฑ์ปกติไม่ควรเกิน 36 นิ้ว)`);
 
-            const fiveOr = '⭐ หลัก 5 อ. 3 ส.:\n- อ.อาหาร (ลดหวานมันเค็ม)\n- อ.ออกกำลังกาย\n- อ.อารมณ์ (ไม่เครียด)\n- อ.อ้วน (คุมน้ำหนัก)\n- อ.ออกซิเจน (ไม่สูบบุหรี่)\n\n- ส.ตรวจร่างกายสม่ำเสมอ\n- ส.สังเกตอาการผิดปกติ\n- ส.ใส่ใจคนรอบข้าง';
+            const fiveOr = '⭐ หลัก 5 อ. 3 ส. เพื่อสุขภาพดี:\n- อ.อาหาร (ลดหวานมันเค็ม)\n- อ.ออกกำลังกาย\n- อ.อารมณ์ (ไม่เครียด)\n- อ.อ้วน (คุมน้ำหนัก)\n- อ.ออกซิเจน (ไม่สูบบุหรี่)\n\n- ส.ตรวจร่างกายสม่ำเสมอ\n- ส.สังเกตอาการผิดปกติ\n- ส.ใส่ใจคนรอบข้าง';
+            
             const befast = '🚨 จดจำอาการ B.E.F.A.S.T หากมีอาการข้อใดข้อหนึ่ง ให้รีบไป รพ.ทันที หรือโทร 1669:\nB - Balance (เดินเซ)\nE - Eye (ตาพร่ามัว)\nF - Face (หน้าเบี้ยว)\nA - Arm (แขนขาอ่อนแรง)\nS - Speech (พูดไม่ชัด)\nT - Time (เวลาคือชีวิต)';
             
             const specificAdvice = sug.length > 0 ? "ข้อควรระวังของท่าน:\n" + sug.join('\n\n') : "✅ ท่านดูแลสุขภาพเบื้องต้นได้ดี ขอให้รักษามาตรฐานนี้ต่อไป";
@@ -408,6 +428,7 @@
 
         function updateRealtimeResult() {
             if(!$('#age').val() || !$('#sbp').val()) { $('#result-container').slideUp(); return; }
+            
             const result = calculateRisk();
             globalRiskData = result;
 
@@ -415,6 +436,7 @@
             $('#rt-desc').text(result.riskGroup).css('color', result.riskColor);
             $('#rt-bar').css('width', (result.barValue / 30 * 100) + "%").css('background', result.riskColor);
             
+            // Basic Explanation
             let expHtml = `<b>ภายใน 10 ปีข้างหน้า</b> โอกาสเกิดโรคหลอดเลือดสมองของคุณคือ <span style="color:${result.riskColor}; font-weight:bold; font-size:24px;">${result.riskPercentText}%</span>`;
             if(result.compareRatio !== 'N/A' && result.compareRatio > 1 && !result.hasStrokeHistory) {
                 expHtml += `<br><br>⚠️ <b>เสี่ยงมากกว่า</b>คนทั่วไป (เพศ/วัยเดียวกัน) ถึง <span style="color:red; font-weight:bold;">${result.compareRatio} เท่า</span>`;
@@ -424,6 +446,7 @@
             if(result.hasStrokeHistory) expHtml += `<br><br>🚨 เนื่องจากท่านมีประวัติสโตรก ความเสี่ยงจึงอยู่ในระดับ <b>สูงอันตราย</b> โดยอัตโนมัติ`;
             $('#basic-explain').html(expHtml);
 
+            // Full Advice Display
             const fullAdvice = generateSuggestionText(result);
             $('#full-advice-display').text(fullAdvice);
 
@@ -432,24 +455,28 @@
 
         // --- Save & Send ---
         async function saveAndSend() {
+            // 1. Validation
             let missingFields = [];
             if(!$('input[name="sex"]:checked').val()) missingFields.push("เพศ");
             if(!$('#age').val()) missingFields.push("อายุ");
             if(!$('#sbp').val()) missingFields.push("ความดันตัวบน");
             if(!$('input[name="smoke"]:checked').val()) missingFields.push("สูบบุหรี่");
             if(!$('input[name="dm"]:checked').val()) missingFields.push("เบาหวาน");
+
             if($('input[name="isSawiPatient"]:checked').val() === '1') {
-                if(!$('#telephone').val() || $('#telephone').val().length !== 10) missingFields.push("เบอร์โทรศัพท์");
-                if(!$('#village').val() || !$('#district').val()) missingFields.push("ที่อยู่");
+                if(!$('#telephone').val() || $('#telephone').val().length !== 10) missingFields.push("เบอร์โทรศัพท์ (10 หลัก)");
+                if(!$('#village').val() || !$('#district').val()) missingFields.push("ที่อยู่ (หมู่/ตำบล)");
                 if(!$('input[name="decision"]:checked').val()) missingFields.push("การตัดสินใจฉุกเฉิน");
                 if(!$('input[name="help"]:checked').val()) missingFields.push("ผู้อยู่ด้วย");
             }
+            
             if(missingFields.length > 0) { alert("กรุณากรอก: " + missingFields.join(", ")); return; }
 
             const btn = $('#saveButton');
             btn.prop('disabled', true).text('กำลังส่งข้อมูล...');
 
             try {
+                // Generate Suggestion String
                 const finalSuggestion = generateSuggestionText(globalRiskData);
 
                 const payload = {
@@ -504,38 +531,40 @@
             }
         }
 
-        // --- Flex Message ---
+        // --- Flex Message (Robust Version: Fix INVALID_MESSAGE) ---
         async function sendFlex(data, name, suggestion) {
-            const safeName = name ? name : "ผู้รับบริการ";
-            const safeSuggestion = suggestion ? suggestion : "ไม่มีคำแนะนำเพิ่มเติม";
-            const safeColor = data.riskColor ? data.riskColor : "#333333";
+            // Check Null/Undefined & Type Safety
+            const safeName = (name && name.trim() !== "") ? String(name) : "ผู้รับบริการ";
+            const safeSuggestion = (suggestion && suggestion.trim() !== "") ? String(suggestion) : "ไม่มีคำแนะนำเพิ่มเติม";
+            const safeColor = data.riskColor ? String(data.riskColor) : "#333333";
             const safeRiskText = data.riskPercentText ? String(data.riskPercentText) : "0";
-            const safeRiskGroup = data.riskGroup ? data.riskGroup : "-";
+            const safeRiskGroup = data.riskGroup ? String(data.riskGroup) : "-";
 
+            // Standard Bubble Size "mega" (safe than giga), Font sizes standard (4xl max)
             const msg = {
                 type: "flex",
                 altText: "ผลประเมินความเสี่ยงสโตรก",
                 contents: {
                     type: "bubble",
-                    size: "giga", 
+                    size: "mega", 
                     body: {
                         type: "box", layout: "vertical",
                         contents: [
                             { type: "text", text: "ผลประเมินความเสี่ยงสโตรก", weight: "bold", color: safeColor, size: "xl", align: "center" }, 
                             { type: "text", text: `คุณ ${safeName}`, weight: "bold", size: "xxl", align: "center", margin: "md", wrap: true }, 
-                            { type: "text", text: "โอกาสเป็นสโตรกใน 10 ปี", size: "lg", color: "#aaaaaa", align: "center", margin: "md" }, 
-                            { type: "text", text: `${safeRiskText}%`, size: "5xl", weight: "bold", color: safeColor, align: "center", margin: "sm" }, 
-                            { type: "text", text: safeRiskGroup, size: "3xl", weight: "bold", color: "#555555", align: "center", margin: "sm", wrap: true }, 
+                            { type: "text", text: "โอกาสเป็นสโตรกใน 10 ปี", size: "md", color: "#aaaaaa", align: "center", margin: "md" }, 
+                            { type: "text", text: `${safeRiskText}%`, size: "4xl", weight: "bold", color: safeColor, align: "center", margin: "sm" }, 
+                            { type: "text", text: safeRiskGroup, size: "xxl", weight: "bold", color: "#555555", align: "center", margin: "sm", wrap: true }, 
                             { type: "separator", margin: "xl" },
-                            { type: "text", text: "คำแนะนำและการปฏิบัติตัว:", weight: "bold", size: "xl", color: "#333333", margin: "lg" }, 
-                            { type: "text", text: safeSuggestion, wrap: true, size: "xl", color: "#444444", margin: "md", lineHeight: "1.5em" } 
+                            { type: "text", text: "คำแนะนำและการปฏิบัติตัว:", weight: "bold", size: "lg", color: "#333333", margin: "lg" }, 
+                            { type: "text", text: safeSuggestion, wrap: true, size: "lg", color: "#444444", margin: "md", lineHeight: "1.5em" } 
                         ]
                     }
                 }
             };
 
             try { await liff.sendMessages([msg]); } 
-            catch (err) { console.error(err); alert("ส่ง LINE ไม่สำเร็จ: " + err.message); }
+            catch (err) { console.error(err); alert("ส่ง LINE ไม่สำเร็จ (INVALID_MESSAGE): " + err.message); }
         }
 
         // --- Helper Functions ---
@@ -602,7 +631,7 @@
             };
         }
 
-        // --- Full Formula ---
+        // --- Full Formula (ไม่ตัดย่อ) ---
         function TASCVDformular(age, smoke, dm, sbp, sex, tc, whr, wc) { 
             var sur_root = 0.964588; 
             var full_score = 0, compare_score = 0;
@@ -645,7 +674,7 @@
             updateRealtimeResult();
         }
         
-        // --- Full Hospital Data ---
+        // --- Full Hospital Data (ไม่ตัดย่อ) ---
         function updateAddressAndHospital() {
             const moo = $('#village').val(); const tb = $('#district').val();
             const hospitals = { "ท่าหิน": "รพ.สต.ท่าหิน", "ด่านสวี": "รพ.สต.ด่านสวี", "เขาทะลุ": "รพ.สต.เขาทะลุ", "เขาค่าย": "รพ.สต.เขาค่าย", "ปากแพรก": "รพ.สต.ปากแพรก", "สวี": "รพ.สต.สวี", "นาสัก": { "1": "รพ.สต.บ้านแก่งกระทั่ง", "6": "รพ.สต.บ้านแก่งกระทั่ง", "11": "รพ.สต.บ้านแก่งกระทั่ง", "13": "รพ.สต.บ้านแก่งกระทั่ง", "18": "รพ.สต.บ้านแก่งกระทั่ง", "19": "รพ.สต.บ้านแก่งกระทั่ง", "7": "รพ.สต.บ้านไทยพัฒนา", "8": "รพ.สต.บ้านไทยพัฒนา", "9": "รพ.สต.บ้านไทยพัฒนา", "10": "รพ.สต.บ้านไทยพัฒนา", "12": "รพ.สต.บ้านไทยพัฒนา", "15": "รพ.สต.บ้านไทยพัฒนา", "16": "รพ.สต.บ้านไทยพัฒนา", "2": "รพ.สต.นาสัก", "3": "รพ.สต.นาสัก", "4": "รพ.สต.นาสัก", "5": "รพ.สต.นาสัก", "14": "รพ.สต.นาสัก", "17": "รพ.สต.นาสัก" }, "ทุ่งระยะ": { "5": "รพ.สต.บ้านคลองน้อย", "6": "รพ.สต.บ้านคลองน้อย", "7": "รพ.สต.บ้านคลองน้อย", "8": "รพ.สต.บ้านคลองน้อย", "9": "รพ.สต.บ้านคลองน้อย", "10": "รพ.สต.บ้านคลองน้อย", "1": "รพ.สต.ทุ่งระยะ", "2": "รพ.สต.ทุ่งระยะ", "3": "รพ.สต.ทุ่งระยะ", "4": "รพ.สต.ทุ่งระยะ", "11": "รพ.สต.ทุ่งระยะ" }, "วิสัยใต้": { "1": "รพ.สต.บ้านดอนทราย", "3": "รพ.สต.บ้านดอนทราย", "4": "รพ.สต.บ้านดอนทราย", "8": "รพ.สต.บ้านดอนทราย", "2": "รพ.สต.วิสัยใต้", "5": "รพ.สต.วิสัยใต้", "6": "รพ.สต.วิสัยใต้", "7": "รพ.สต.วิสัยใต้", "9": "รพ.สต.วิสัยใต้", "10": "รพ.สต.วิสัยใต้" }, "ครน": { "1": "รพ.สต.ครน", "2": "รพ.สต.ครน", "3": "รพ.สต.ครน", "4": "รพ.สต.ครน", "6": "รพ.สต.ครน", "12": "รพ.สต.ครน", "9": "รพ.สต.บ้านควนสามัคคี", "10": "รพ.สต.บ้านควนสามัคคี", "13": "รพ.สต.บ้านควนสามัคคี", "14": "รพ.สต.บ้านควนสามัคคี", "5": "รพ.สต.บ้านน้ำฉา", "7": "รพ.สต.บ้านน้ำฉา", "8": "รพ.สต.บ้านน้ำฉา", "11": "รพ.สต.บ้านน้ำฉา" }, "นาโพธิ์": "รพ.สวี (นาโพธิ์)" };

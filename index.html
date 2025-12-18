@@ -18,24 +18,21 @@
             margin: 0; color: #333;
             line-height: 1.5;
             min-height: 100vh;
-            
-            /* พื้นหลังสีแดงไล่ไปขาว ตามโจทย์ #ff3654 */
             background: linear-gradient(180deg, #ff3654 0%, #ffffff 400px);
-            
             background-repeat: no-repeat;
             background-attachment: fixed; 
         }
         .container { 
             max-width: 100%; 
-            padding: 10px 15px; /* ลด Padding บนล่าง */
+            padding: 10px 15px; 
             margin: 0 auto;
         }
 
         /* --- Header --- */
         .header-group { 
             display: flex; align-items: center; justify-content: center; 
-            margin-bottom: 15px; /* ลดระยะห่าง */
-            padding-top: 10px;   /* ลดระยะห่าง */
+            margin-bottom: 15px; 
+            padding-top: 10px;   
         }
         h1 { 
             color: #ffffff; 
@@ -58,7 +55,7 @@
             border-radius: 20px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             padding: 25px; 
-            margin-bottom: 15px; /* ลดระยะห่างด้านล่าง */
+            margin-bottom: 15px; 
             border: 1px solid #f0f0f0;
         }
 
@@ -67,7 +64,7 @@
             text-align: center;
             color: #666;
             font-size: 14px;
-            margin-top: 5px; /* ลดระยะห่าง */
+            margin-top: 5px; 
             margin-bottom: 15px;
         }
 
@@ -82,7 +79,6 @@
             width: 100%; padding: 12px; font-size: 22px; 
             border-radius: 12px; border: 1px solid #ccc; background: #fdfdfd;
         }
-        /* เปลี่ยนสี Glow เป็นแดงอ่อน */
         input:focus, select:focus { border-color: #ff3654; outline: none; background: #fff; box-shadow: 0 0 0 0.25rem rgba(255, 54, 84, 0.25); }
 
         .inline-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
@@ -128,7 +124,7 @@
             border-radius: 12px;
             margin-bottom: 20px;
             font-size: 18px;
-            display: none; /* ซ่อนไว้ก่อน */
+            display: none;
             align-items: center;
             justify-content: center;
             text-align: center;
@@ -168,17 +164,14 @@
         <!-- Main Card -->
         <div class="main-card">
             
-            <!-- ส่วนแสดงผลผู้แนะนำ (เพิ่มใหม่) -->
-            <div id="referrer-display" class="referrer-box">
-                <!-- ข้อมูลจะถูกเติมด้วย JS -->
-            </div>
+            <!-- ส่วนแสดงผลผู้แนะนำ -->
+            <div id="referrer-display" class="referrer-box"></div>
 
             <div id="history-alert"></div>
 
             <form id="mainForm">
                 <input type="hidden" id="lineName">
                 <input type="hidden" id="area">
-                <!-- เก็บ referrer ID ไว้ส่งกลับ backend ด้วย (เพิ่มใหม่) -->
                 <input type="hidden" id="referrerId"> 
 
                 <div class="form-row">
@@ -363,7 +356,7 @@
                 </div>
             </div>
 
-            <!-- PDPA Section moved here -->
+            <!-- PDPA Section -->
             <div style="margin-top: 25px; margin-bottom: 10px;">
                 <label class="radio-label" style="align-items: flex-start; background-color: #e8f5e9; padding: 15px; border-radius: 12px; border: 1px solid #c8e6c9; width: 100%;">
                     <input type="checkbox" id="pdpa" checked style="margin-top: 5px;"> 
@@ -398,8 +391,7 @@
             populateVillageDropdown();
             toggleMeasurementFields();
 
-            // --- ตรวจสอบ Referrer จาก URL และบันทึก Log ---
-            checkReferrer();
+            checkReferrer(); // ตรวจสอบชื่อคนแนะนำ (แสดงผลเร็ว)
             
             // Listeners
             $('input[name="isSawiPatient"]').change(function() {
@@ -430,17 +422,20 @@
             $('input[name="useCholesterol"]').change(toggleMeasurementFields);
             $('#chk-stroke').change(function() {
                 this.checked ? $('#stroke-date-wrapper').slideDown() : $('#stroke-date-wrapper').slideUp();
+                updateRealtimeResult();
+            });
+            $('.calc-trigger').on('input change', updateRealtimeResult);
+            $('#village, #district').change(updateAddressAndHospital);
+            $('#role').change(function() { checkHistoryDisplay(); });
+        });
+
         // --- ฟังก์ชันสำหรับตรวจสอบ Referrer ---
         function checkReferrer() {
-            // ดึงค่า ref จาก URL Query String
             const urlParams = new URLSearchParams(window.location.search);
             const refId = urlParams.get('ref');
 
             if (refId) {
-                // 1. เก็บค่า refId ลง hidden field
                 $('#referrerId').val(refId);
-
-                // 2. เรียก API หาชื่อผู้แนะนำมาแสดง (เอาไว้แค่ส่วนนี้ เพื่อให้แสดงผลเร็ว)
                 $.getJSON(GAS_URL, { action: 'getReferrerName', refId: refId }, function(res) {
                     if (res.success && res.name) {
                         $('#referrer-display')
@@ -448,8 +443,6 @@
                             .css('display', 'flex'); 
                     }
                 });
-                
-                // *** ลบส่วน logVhvShare ออกจากตรงนี้ ***
             }
         }
 
@@ -523,7 +516,6 @@
         // --- Save & Send ---
         async function saveAndSend(actionType) {
             let missingFields = [];
-            // ... (Validation) ...
             if(!$('input[name="sex"]:checked').val()) missingFields.push("เพศ");
             if(!$('#age').val()) missingFields.push("อายุ");
             if(!$('#sbp').val()) missingFields.push("ความดันตัวบน");
@@ -575,7 +567,6 @@
                     allow_tel: $('#allowTel').is(':checked')?'Yes':'No',
                     pdpa: $('#pdpa').is(':checked') ? 'Yes' : 'No', // ส่งค่า PDPA
                     area: $('#area').val(),
-                    // ส่งค่า referrerId ไปด้วยถ้ามี
                     referrerId: $('#referrerId').val() 
                 };
 

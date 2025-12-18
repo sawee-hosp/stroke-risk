@@ -398,7 +398,7 @@
             populateVillageDropdown();
             toggleMeasurementFields();
 
-            // --- ตรวจสอบ Referrer จาก URL (เพิ่มใหม่) ---
+            // --- ตรวจสอบ Referrer จาก URL และบันทึก Log ---
             checkReferrer();
             
             // Listeners
@@ -430,32 +430,26 @@
             $('input[name="useCholesterol"]').change(toggleMeasurementFields);
             $('#chk-stroke').change(function() {
                 this.checked ? $('#stroke-date-wrapper').slideDown() : $('#stroke-date-wrapper').slideUp();
-                updateRealtimeResult();
-            });
-            $('.calc-trigger').on('input change', updateRealtimeResult);
-            $('#village, #district').change(updateAddressAndHospital);
-            $('#role').change(function() { checkHistoryDisplay(); });
-        });
-
-        // --- ฟังก์ชันใหม่สำหรับตรวจสอบ Referrer ---
+        // --- ฟังก์ชันสำหรับตรวจสอบ Referrer ---
         function checkReferrer() {
             // ดึงค่า ref จาก URL Query String
             const urlParams = new URLSearchParams(window.location.search);
             const refId = urlParams.get('ref');
 
             if (refId) {
-                // เก็บค่า refId ลง hidden field (เผื่อต้องการบันทึกในอนาคต)
+                // 1. เก็บค่า refId ลง hidden field
                 $('#referrerId').val(refId);
 
-                // เรียก API ไปที่ GAS Backend เพื่อหาชื่อผู้แนะนำ
+                // 2. เรียก API หาชื่อผู้แนะนำมาแสดง (เอาไว้แค่ส่วนนี้ เพื่อให้แสดงผลเร็ว)
                 $.getJSON(GAS_URL, { action: 'getReferrerName', refId: refId }, function(res) {
                     if (res.success && res.name) {
-                        // แสดงกล่องข้อความผู้แนะนำ
                         $('#referrer-display')
                             .html(`🤝 แนะนำให้มาประเมินโดย: <b>คุณ${res.name}</b>`)
-                            .css('display', 'flex'); // ใช้ flex เพื่อจัดกึ่งกลาง
+                            .css('display', 'flex'); 
                     }
                 });
+                
+                // *** ลบส่วน logVhvShare ออกจากตรงนี้ ***
             }
         }
 
@@ -465,6 +459,20 @@
                 if (liff.isLoggedIn()) {
                     userProfile = await liff.getProfile();
                     checkUserRegistration(userProfile.userId);
+
+                    // --- [เพิ่มใหม่] บันทึก Log การแชร์ที่นี่ เพราะมี userId แล้ว ---
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const refId = urlParams.get('ref');
+                    if (refId) {
+                        $.getJSON(GAS_URL, { 
+                            action: 'logVhvShare', 
+                            refId: refId,
+                            page: 'risk_assessment',
+                            viewerId: userProfile.userId // ส่ง ID คนสแกนไปด้วย
+                        });
+                    }
+                    // -------------------------------------------------------
+
                 } else { liff.login(); }
             } catch (e) { console.error(e); }
         }

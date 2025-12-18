@@ -118,6 +118,21 @@
         .found { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
         .warn { background: #fff3cd; color: #856404; border: 1px solid #ffecb5; }
         .phone-alert { color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 18px; display: none; }
+        
+        /* สไตล์สำหรับกล่องผู้แนะนำ */
+        .referrer-box {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #90caf9;
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            display: none; /* ซ่อนไว้ก่อน */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
 
         #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; }
     </style>
@@ -153,11 +168,18 @@
         <!-- Main Card -->
         <div class="main-card">
             
+            <!-- ส่วนแสดงผลผู้แนะนำ (เพิ่มใหม่) -->
+            <div id="referrer-display" class="referrer-box">
+                <!-- ข้อมูลจะถูกเติมด้วย JS -->
+            </div>
+
             <div id="history-alert"></div>
 
             <form id="mainForm">
                 <input type="hidden" id="lineName">
                 <input type="hidden" id="area">
+                <!-- เก็บ referrer ID ไว้ส่งกลับ backend ด้วย (เพิ่มใหม่) -->
+                <input type="hidden" id="referrerId"> 
 
                 <div class="form-row">
                     <label>ประเมินให้ใคร:</label>
@@ -375,6 +397,9 @@
             initializeLiff();
             populateVillageDropdown();
             toggleMeasurementFields();
+
+            // --- ตรวจสอบ Referrer จาก URL (เพิ่มใหม่) ---
+            checkReferrer();
             
             // Listeners
             $('input[name="isSawiPatient"]').change(function() {
@@ -411,6 +436,28 @@
             $('#village, #district').change(updateAddressAndHospital);
             $('#role').change(function() { checkHistoryDisplay(); });
         });
+
+        // --- ฟังก์ชันใหม่สำหรับตรวจสอบ Referrer ---
+        function checkReferrer() {
+            // ดึงค่า ref จาก URL Query String
+            const urlParams = new URLSearchParams(window.location.search);
+            const refId = urlParams.get('ref');
+
+            if (refId) {
+                // เก็บค่า refId ลง hidden field (เผื่อต้องการบันทึกในอนาคต)
+                $('#referrerId').val(refId);
+
+                // เรียก API ไปที่ GAS Backend เพื่อหาชื่อผู้แนะนำ
+                $.getJSON(GAS_URL, { action: 'getReferrerName', refId: refId }, function(res) {
+                    if (res.success && res.name) {
+                        // แสดงกล่องข้อความผู้แนะนำ
+                        $('#referrer-display')
+                            .html(`🤝 แนะนำให้มาประเมินโดย: <b>คุณ${res.name}</b>`)
+                            .css('display', 'flex'); // ใช้ flex เพื่อจัดกึ่งกลาง
+                    }
+                });
+            }
+        }
 
         async function initializeLiff() {
             try {
@@ -519,7 +566,9 @@
                     pictureUrl: userProfile ? userProfile.pictureUrl : '',
                     allow_tel: $('#allowTel').is(':checked')?'Yes':'No',
                     pdpa: $('#pdpa').is(':checked') ? 'Yes' : 'No', // ส่งค่า PDPA
-                    area: $('#area').val()
+                    area: $('#area').val(),
+                    // ส่งค่า referrerId ไปด้วยถ้ามี
+                    referrerId: $('#referrerId').val() 
                 };
 
                 await fetch(GAS_URL, {
